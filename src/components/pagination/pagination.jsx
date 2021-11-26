@@ -8,9 +8,9 @@ let Pagination = ({allPages, setCurrentPage}) => {
 
     return (
         <ul className={style.pagination}>
-            <PagePrev/>
+            <PagePrev allPages={allPages} setCurrentPage={setCurrentPage}/>
             <PageNum allPages={allPages} setCurrentPage={setCurrentPage}/>
-            <PageNext/>
+            <PageNext allPages={allPages} setCurrentPage={setCurrentPage}/>
         </ul>
     )
 }

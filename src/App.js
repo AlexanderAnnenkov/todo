@@ -6,16 +6,16 @@ import Pagination from "./components/pagination/pagination";
 
 function App() {
   const _=require('lodash');
+
   if (JSON.parse(localStorage.getItem('todos'))===null){
     localStorage.setItem('todos', JSON.stringify([]))
   }
+
   const [text,setText] = useState('');
   const [actionType, setActionType] = useState('all')
   const [currentPage, setCurrentPage] = useState('0')
   const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')))
-  // const [allPages, setAllPages] = useState([]);
-  // const [pages, setPages] = useState(0);
-  let date = new Date()
+
   let filterTask = []
   let allPages =[]
   let showTasks = []
@@ -34,22 +34,19 @@ function App() {
     break
   }
 
-  let countPages = Math.ceil(filterTask.length / 5);
+  const countPages = Math.ceil(filterTask.length / 5);
+
     for (let i = 0 ; i < countPages; i++){
       allPages.push(i)
   }
-  console.log(allPages)
-  showTasks = filterTask.slice(currentPage*5 , (currentPage+1)*5)
-  console.log()
-  
-  
-  
 
+  showTasks = filterTask.slice(currentPage*5 , (currentPage+1)*5)
+
+  
   const onNewTextTask = (e) => {
     setText(e.target.value);
     
   }
-
 
   const sendTask=(event)=>{
     if(event.key === "Enter"){
@@ -57,15 +54,13 @@ function App() {
         id: Math.random(),
         name: text,
         isCheck: false,
-        date: `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`
+        date: new Date().toLocaleString()
         // date: "27.11.2021"
       })
       localStorage.setItem('todos', JSON.stringify(todos));
       setText('')
     }
   }
-
-
   
   return (
     <div className={style.app}>

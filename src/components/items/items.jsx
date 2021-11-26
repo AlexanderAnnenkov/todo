@@ -3,24 +3,24 @@ import style from './items.module.css'
 
 
 
-let Items = ({state , setTodos, filterTask, showTasks}) => {    
+let Items = ({state , setTodos, showTasks}) => {    
     
     const delItem = (id) =>{
-        let newTodos=(state.filter(e => e.id != id))
-        setTodos(newTodos)
-        localStorage.setItem('todos', JSON.stringify(newTodos));
-      }
+      let newTodos = state.filter((e) => e.id !== id);
+      setTodos(newTodos);
+      localStorage.setItem("todos", JSON.stringify(newTodos));
+    }
 
     const switchCheck = (e) => { 
         e.isCheck=!e.isCheck
         localStorage.setItem('todos', JSON.stringify(state))
         setTodos(JSON.parse(localStorage.getItem('todos'))) 
     }
+
     const enableContentEditable = (e) =>{
-        console.log(e.target.textContent)
         e.target.contentEditable=true;
-        
     }
+
     const editTask = (e, content) =>{
         if (e.key === 'Enter'){
             content.name = e.target.textContent
@@ -30,7 +30,6 @@ let Items = ({state , setTodos, filterTask, showTasks}) => {
         if (e.key === 'Escape'){
             e.target.textContent = content.name
             e.target.contentEditable=false
-
         }
     }
     
