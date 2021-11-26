@@ -3,7 +3,7 @@ import style from './items.module.css'
 
 
 
-let Items = ({state , setTodos, filterTask}) => {    
+let Items = ({state , setTodos, filterTask, showTasks}) => {    
     
     const delItem = (id) =>{
         let newTodos=(state.filter(e => e.id != id))
@@ -36,7 +36,7 @@ let Items = ({state , setTodos, filterTask}) => {
     
     return(
         <ul className={style.items}>
-        {filterTask.map(t => 
+        {showTasks.map(t => 
         <li key={t.id} id={t.id} className={style.item}>
             <input type="checkbox" checked={t.isCheck} onChange={() => {switchCheck(t)}}/>
             <span onDoubleClick={enableContentEditable} onKeyDown={(e) => editTask(e, t)} className={style.text}>{t.name}</span>

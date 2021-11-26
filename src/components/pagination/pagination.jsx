@@ -4,11 +4,12 @@ import PagePrev from "./page/pagePrev";
 import PageNum from "./page/pageNum";
 import PageNext from "./page/pageNext";
 
-let Pagination = () => {
+let Pagination = ({allPages, setCurrentPage}) => {
+
     return (
         <ul className={style.pagination}>
             <PagePrev/>
-            <PageNum/>
+            <PageNum allPages={allPages} setCurrentPage={setCurrentPage}/>
             <PageNext/>
         </ul>
     )

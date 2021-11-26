@@ -9,14 +9,19 @@ function App() {
   if (JSON.parse(localStorage.getItem('todos'))===null){
     localStorage.setItem('todos', JSON.stringify([]))
   }
-  const [actionType, setActionType] = useState({
-    filter: 'All',
-  })
-  let filterTask = []
+  const [text,setText] = useState('');
+  const [actionType, setActionType] = useState('all')
+  const [currentPage, setCurrentPage] = useState('0')
   const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')))
+  // const [allPages, setAllPages] = useState([]);
+  // const [pages, setPages] = useState(0);
+  let date = new Date()
+  let filterTask = []
+  let allPages =[]
+  let showTasks = []
   
 
-  switch(actionType.filter){
+  switch(actionType){
     case 'Done' : filterTask=(todos.filter(e => e.isCheck === true))
     break
     case 'Undone': filterTask=(todos.filter(e => e.isCheck === false))
@@ -29,9 +34,17 @@ function App() {
     break
   }
 
-  const [text,setText] = useState('');
-  let date = new Date()
-  // console.log(date)
+  let countPages = Math.ceil(filterTask.length / 5);
+    for (let i = 0 ; i < countPages; i++){
+      allPages.push(i)
+  }
+  console.log(allPages)
+  showTasks = filterTask.slice(currentPage*5 , (currentPage+1)*5)
+  console.log()
+  
+  
+  
+
   const onNewTextTask = (e) => {
     setText(e.target.value);
     
@@ -59,8 +72,8 @@ function App() {
       <h1 className={style.title}>ToDo List</h1>
       <input onKeyDown={sendTask} onChange={onNewTextTask} value={text} className={style.fieldWrite} type="text" placeholder="I want to..."></input>
       <Buttons setActionType={setActionType} actionType={actionType}/>
-      <Items state={todos} filterTask={filterTask} setTodos={setTodos}/>
-      <Pagination/> 
+      <Items state={todos} filterTask={filterTask} setTodos={setTodos} showTasks={showTasks}/>
+      <Pagination allPages={allPages} setCurrentPage={setCurrentPage}/> 
     </div>
   );
 }
