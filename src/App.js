@@ -51,24 +51,7 @@ function App() {
       setText('')
     }
   }
-  const sortTaskNew = () => {
-    switch(actionType.sort){
-      case 'Old': {
-      let sort =_.sortBy(todos, 'date')
-      localStorage.setItem('todos', JSON.stringify(sort))
-    }
-      break
-      case 'New': {
-      let sort =_.sortBy(todos, 'date').reverse()
-      localStorage.setItem('todos', JSON.stringify(sort))
-      }
-      break
-      default:
-        break
-    }
-      
-  }
-  // sortTaskNew()
+
 
   
   return (
