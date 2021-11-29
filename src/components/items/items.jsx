@@ -21,6 +21,10 @@ let Items = ({state , setTodos, showTasks}) => {
         e.target.contentEditable=true;
     }
 
+    const disableBlur =(e) =>{
+        e.target.contentEditable=false;
+    }
+
     const editTask = (e, content) =>{
         if (e.key === 'Enter'){
             content.name = e.target.textContent
@@ -37,10 +41,23 @@ let Items = ({state , setTodos, showTasks}) => {
         <ul className={style.items}>
         {showTasks.map(t => 
         <li key={t.id} id={t.id} className={style.item}>
-            <input type="checkbox" checked={t.isCheck} onChange={() => {switchCheck(t)}}/>
-            <span onDoubleClick={enableContentEditable} onKeyDown={(e) => editTask(e, t)} className={style.text}>{t.name}</span>
-            <span className={style.date}>{t.date}</span>
-            <span onClick={() => {delItem(t.id)}} className={style.delete}>
+            <input 
+            type="checkbox" 
+            checked={t.isCheck} 
+            onChange={() => {switchCheck(t)}}/>
+
+            <span 
+            onDoubleClick={enableContentEditable} 
+            onKeyDown={(e) => editTask(e, t)}
+            onBlur={disableBlur} 
+            className={style.text}>{t.name}</span>
+
+            <span 
+            className={style.date}>{t.date}</span>
+
+            <span 
+            onClick={() => {delItem(t.id)}} 
+            className={style.delete}>
                     <img src="https://cdn-icons-png.flaticon.com/512/2602/2602735.png"/>
             </span>
         </li> )}

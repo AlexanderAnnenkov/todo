@@ -49,7 +49,7 @@ function App() {
   }
 
   const sendTask=(event)=>{
-    if(event.key === "Enter"){
+    if(event.key === "Enter" && event.target.value !==''){
       todos.push({
         id: Math.random(),
         name: text,
@@ -65,10 +65,27 @@ function App() {
   return (
     <div className={style.app}>
       <h1 className={style.title}>ToDo List</h1>
-      <input onKeyDown={sendTask} onChange={onNewTextTask} value={text} className={style.fieldWrite} type="text" placeholder="I want to..."></input>
-      <Buttons setActionType={setActionType} actionType={actionType}/>
-      <Items state={todos} filterTask={filterTask} setTodos={setTodos} showTasks={showTasks}/>
-      <Pagination allPages={allPages} setCurrentPage={setCurrentPage}/> 
+      
+      <input onKeyDown={sendTask}
+      onChange={onNewTextTask} 
+      value={text} 
+      className={style.fieldWrite} 
+      type="text" placeholder="I want to..."></input>
+
+      <Buttons 
+      setActionType={setActionType} 
+      actionType={actionType}/>
+
+      <Items 
+      state={todos} 
+      filterTask={filterTask} 
+      setTodos={setTodos} 
+      showTasks={showTasks}/>
+
+      <Pagination 
+      allPages={allPages} 
+      setCurrentPage={setCurrentPage}/>
+
     </div>
   );
 }
