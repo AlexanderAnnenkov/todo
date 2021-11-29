@@ -21,8 +21,9 @@ let Items = ({state , setTodos, showTasks}) => {
         e.target.contentEditable=true;
     }
 //onBlur event for switch attribute 'contentEditable' on tag 'span' when click on body site
-    const disableBlur =(e) =>{
+    const disableBlur =(e, content) =>{
         e.target.contentEditable=false;
+        e.target.textContent=content.name
     }
 //onKeyDown event for accept edit in 'Editmode'
     const editTask = (e, content) =>{
@@ -55,7 +56,7 @@ let Items = ({state , setTodos, showTasks}) => {
             <span 
             onDoubleClick={enableContentEditable} 
             onKeyDown={(e) => editTask(e, t)}
-            onBlur={disableBlur} 
+            onBlur={(e) => disableBlur(e, t)} 
             className={style.text}>{t.name}</span>
 
             <span 
