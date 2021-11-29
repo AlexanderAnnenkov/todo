@@ -12,7 +12,7 @@ function App() {
   }
 
   const [text,setText] = useState('');
-  const [actionType, setActionType] = useState('all')
+  const [actionType, setActionType] = useState('')
   const [currentPage, setCurrentPage] = useState('0')
   const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')))
 
@@ -33,7 +33,7 @@ function App() {
     default: filterTask = todos
     break
   }
-
+  
   const countPages = Math.ceil(filterTask.length / 5);
 
     for (let i = 0 ; i < countPages; i++){
@@ -55,7 +55,6 @@ function App() {
         name: text,
         isCheck: false,
         date: new Date().toLocaleString()
-        // date: "27.11.2021"
       })
       localStorage.setItem('todos', JSON.stringify(todos));
       setText('')
@@ -83,8 +82,9 @@ function App() {
       showTasks={showTasks}/>
 
       <Pagination 
-      allPages={allPages} 
-      setCurrentPage={setCurrentPage}/>
+      allPages={allPages}
+      setCurrentPage={setCurrentPage}
+      currentPage={currentPage}/>
 
     </div>
   );
