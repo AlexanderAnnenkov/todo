@@ -7,7 +7,7 @@ import {sortBy} from 'lodash'
 
 function App() {
 
-  if (JSON.parse(localStorage.getItem('todos'))===null){  // Check on empty array  
+  if (JSON.parse(localStorage.getItem('todos'))===null){  /// Check on empty array  
     localStorage.setItem('todos', JSON.stringify([]))
   }
 
