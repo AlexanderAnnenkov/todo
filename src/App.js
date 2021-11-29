@@ -50,7 +50,7 @@ function App() {
 
   const sendTask=(event)=>{
     if(event.key === "Enter" && event.target.value !==''){
-      todos.push({
+      todos.unshift({
         id: Math.random(),
         name: text,
         isCheck: false,
@@ -65,7 +65,7 @@ function App() {
   return (
     <div className={style.app}>
       <h1 className={style.title}>ToDo List</h1>
-      
+
       <input onKeyDown={sendTask}
       onChange={onNewTextTask} 
       value={text} 

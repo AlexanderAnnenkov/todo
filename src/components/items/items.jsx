@@ -27,9 +27,15 @@ let Items = ({state , setTodos, showTasks}) => {
 
     const editTask = (e, content) =>{
         if (e.key === 'Enter'){
-            content.name = e.target.textContent
-            localStorage.setItem('todos', JSON.stringify(state))
-            e.target.contentEditable = false
+            if(e.target.textContent !==''){
+                content.name = e.target.textContent
+                localStorage.setItem('todos', JSON.stringify(state))
+                e.target.contentEditable = false
+            } else {
+                e.target.textContent = content.name
+                e.target.contentEditable=false
+            }
+            
         }
         if (e.key === 'Escape'){
             e.target.textContent = content.name
