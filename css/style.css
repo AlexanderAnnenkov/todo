@@ -1,0 +1,123 @@
+/* Dropping styles */
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+body{
+    display: flex;
+    justify-content: center;
+}
+/* Content block */
+.content{
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 60px 0px;   
+}
+
+h1{
+    margin:15px 0px;
+}
+
+/* Input(text) */
+.fieldWrite{
+    margin-bottom: 30px;
+    padding: 2px 10px;
+}
+
+/* Parent class for Button */
+.btn{
+    display: flex;
+    width: 400px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+button{
+    border: 0px solid black;
+    border-radius: 5px ;
+    background-color: skyblue;
+    padding: 5px 10px;
+    transition: 0.4s;
+}
+
+button:hover{
+    background-color: rgba(139,215,230, 1);
+    transition: 0.4s;
+
+}
+
+/* Parent class for Tasks (ul) */
+.items{
+    display: flex;
+    list-style: none;
+    justify-items: center;
+    flex-direction: column;
+    
+}
+
+/* Task (li)*/
+.item{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 400px;
+    height: 50px;
+    margin-top: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+/* Span(text) */
+.text{
+    text-align: center;
+    width: 150px;
+}
+
+/* Input(checkbox) */
+.item input{
+    zoom: 1.5;
+}
+
+.item:hover{
+    background-color: rgba(205,205,205,0.5);
+    transition: 0.4s;
+}
+
+/* Icon delete */
+.delete img{
+    width: 32px;
+    height: 32px;
+}
+
+/* Parent class for Page (ul) */
+.pagination{
+    display: flex;
+    list-style: none;
+    margin: 25px 0px;
+    justify-content: space-between;
+
+}
+
+/* Number page (li) */
+.page{
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 0 10px;
+    width: 30px;
+    text-align: center;
+    transition: 0.4s;
+}
+.active{
+    background-color: skyblue;
+}
+.page:hover{
+    cursor: alias;
+    background-color: skyblue;
+    transition: 0.4s;
+}
