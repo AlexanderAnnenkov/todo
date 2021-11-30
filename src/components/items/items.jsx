@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import style from './items.module.css'
 
@@ -6,9 +7,12 @@ import style from './items.module.css'
 let Items = ({state , setTodos, showTasks}) => {    
 // Function 'Delete task'    
     const delItem = (id) =>{
-      let newTodos = state.filter((e) => e.id !== id);
-      setTodos(newTodos);
-      localStorage.setItem("todos", JSON.stringify(newTodos));
+        axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/1/${id}`)
+        .then(() => {
+            let newTodos = state.filter((e) => e.uuid !== id);
+            setTodos(newTodos);})
+      
+      
     }
 //Funcion 'Edit check'
     const switchCheck = (e) => { 
@@ -47,7 +51,7 @@ let Items = ({state , setTodos, showTasks}) => {
     return(
         <ul className={style.items}>
         {showTasks.map(t => 
-        <li key={t.id} id={t.id} className={style.item}>
+        <li key={t.uuid} id={t.uuid} className={style.item}>
             <input 
             type="checkbox" 
             checked={t.isCheck} 
@@ -63,7 +67,7 @@ let Items = ({state , setTodos, showTasks}) => {
             className={style.date}>{t.date}</span>
 
             <span 
-            onClick={() => {delItem(t.id)}} 
+            onClick={() => {delItem(t.uuid)}} 
             className={style.delete}>
                     <img src="https://cdn-icons-png.flaticon.com/512/2602/2602735.png"/>
             </span>
