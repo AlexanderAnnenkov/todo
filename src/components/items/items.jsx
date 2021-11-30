@@ -4,21 +4,26 @@ import style from './items.module.css'
 
 
 
-let Items = ({state , setTodos, showTasks}) => {    
+let Items = ({state , setTodos, showTasks}) => {   
+    console.log(state); 
 // Function 'Delete task'    
     const delItem = (id) =>{
         axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/1/${id}`)
         .then(() => {
             let newTodos = state.filter((e) => e.uuid !== id);
-            setTodos(newTodos);})
-      
-      
+            setTodos(newTodos);})      
     }
 //Funcion 'Edit check'
-    const switchCheck = (e) => { 
-        e.isCheck=!e.isCheck
-        localStorage.setItem('todos', JSON.stringify(state))
-        setTodos(JSON.parse(localStorage.getItem('todos'))) 
+    const switchCheck = (e) => {
+        axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/1/${e.uuid}`,{
+            name: e.name,
+            done: !e.done
+        }).then(
+            e.done=!e.done,
+        )
+        
+        // localStorage.setItem('todos', JSON.stringify(state))
+        // setTodos(JSON.parse(localStorage.getItem('todos'))) 
     }
 //onDblClick event for switch attribute 'contentEditable' on tag 'span'
     const enableContentEditable = (e) =>{
@@ -54,7 +59,7 @@ let Items = ({state , setTodos, showTasks}) => {
         <li key={t.uuid} id={t.uuid} className={style.item}>
             <input 
             type="checkbox" 
-            checked={t.isCheck} 
+            checked={t.done} 
             onChange={() => {switchCheck(t)}}/>
 
             <span 
