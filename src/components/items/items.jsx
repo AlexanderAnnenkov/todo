@@ -2,28 +2,34 @@ import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
 
-let Items = ({ state, setTodos, showTasks, getTasks }) => {
+let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert }) => {
   // let date = new Date(Date.parse(state[0].createdAt))
 
   // Function 'Delete task'
   const delItem = (id) => {
-    axios
+    try{axios
       .delete(`https://todo-api-learning.herokuapp.com/v1/task/1/${id}`)
-      .then(() => {
         let newTodos = state.filter((e) => e.uuid !== id)
         setTodos(newTodos)
-      })
+    }
+      catch (err) {
+        setAlert(err.response.data.message)
+        setTriggerError(true)
+    }
   }
   //Funcion 'Edit check'
   const switchCheck = (e) => {
-    axios
+    try{axios
       .patch(`https://todo-api-learning.herokuapp.com/v1/task/1/${e.uuid}`, {
         name: e.name,
         done: !e.done,
       })
-      .then((res) => {
         getTasks()
-      })
+    }catch (err) {
+        setAlert(err.response.data.message)
+        setTriggerError(true)
+    }
+      
   }
   //onDblClick event for switch attribute 'contentEditable' on tag 'span'
   const enableContentEditable = (e) => {
@@ -35,33 +41,37 @@ let Items = ({ state, setTodos, showTasks, getTasks }) => {
     e.target.textContent = content.name
   }
   //onKeyDown event for accept edit in 'Editmode'
-  const editTask = (e, content) => {
-    console.log(content)
-    if (e.key === "Enter") {
-      if (e.target.textContent !== "") {
-        const editTask = e.target.textContent
-        content.name = e.target.textContent
-        axios
-          .patch(
-            `https://todo-api-learning.herokuapp.com/v1/task/1/${content.uuid}`,
-            {
-              name: editTask,
-              done: false,
-            }
-          )
-          .then((res) => {
-            console.log(editTask)
-            e.target.contentEditable = false
-            getTasks()
-          })
-      } else {
+  const editTask = async(e, content) => {
+    try {
+      if (e.key === "Enter") {
+        if (e.target.textContent !== "") {
+          const editTask = e.target.textContent
+          content.name = e.target.textContent
+          await axios
+            .patch(
+              `https://todo-api-learning.herokuapp.com/v1/task/1/${content.uuid}`,
+              {
+                name: editTask,
+                done: false,
+              }
+            )
+            .then((res) => {
+              console.log(editTask)
+              e.target.contentEditable = false
+              getTasks()
+            })
+        } else {
+          e.target.textContent = content.name
+          e.target.contentEditable = false
+        }
+      }
+      if (e.key === "Escape") {
         e.target.textContent = content.name
         e.target.contentEditable = false
       }
-    }
-    if (e.key === "Escape") {
-      e.target.textContent = content.name
-      e.target.contentEditable = false
+    }catch (err) {
+        setAlert(err.response.data.message)
+        setTriggerError(true)
     }
   }
   // let date = new Date(Date.parse(showTasks[0].createdAt))

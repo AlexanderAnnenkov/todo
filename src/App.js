@@ -5,6 +5,7 @@ import Items from "./components/items/items"
 import Pagination from "./components/pagination/pagination"
 import axios from "axios"
 import Input from "./components/input/input"
+import Alert from "@mui/material/Alert"
 
 function App() {
   const [text, setText] = useState("")
@@ -13,6 +14,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState("0")
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
+  const [triggerError, setTriggerError] = useState(false)
   let allPages = [] // Array with count number page
   let showTasks = [] // Array for render 5 task in page
 
@@ -59,12 +61,15 @@ function App() {
         getTasks()
       }
     } catch (err) {
-      console.log(err.response.data.message)
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
   }
   // Render components
   return (
     <div className={style.app}>
+      {triggerError && <Alert severity="error" onClose={()=> setTriggerError(false)} >{alert}</Alert>}
+
       <h1 className={style.title}>ToDo List</h1>
 
       <Input sendTask={sendTask} onNewTextTask={onNewTextTask} text={text} />
@@ -81,6 +86,8 @@ function App() {
         state={todos}
         setTodos={setTodos}
         showTasks={showTasks}
+        setTriggerError={setTriggerError}
+        setAlert={setAlert}
       />
 
       <Pagination
