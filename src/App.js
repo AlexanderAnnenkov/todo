@@ -16,13 +16,20 @@ function App() {
   let showTasks = []    // Array for render 5 task in page
 
   useEffect(() => {
-    axios.get("https://todo-api-learning.herokuapp.com/v1/tasks/1")
+    axios.get(`https://todo-api-learning.herokuapp.com/v1/tasks/1?filterBy=${filtredType}&${orderType}`)
     .then(res => {
       setTodos(res.data)
       
     })
 
-  }, [text])
+  }, [text, filtredType, orderType])
+  
+  const getTasks = () => {
+    axios.get(`https://todo-api-learning.herokuapp.com/v1/tasks/1?filterBy=${filtredType}&${orderType}`)
+    .then(res => {
+      setTodos(res.data)
+    })
+  }
   // const for count page
   const countPages = Math.ceil(todos.length / 5);
 // Cycle for push in array 'allPages' quantity page
@@ -62,6 +69,7 @@ function App() {
       setOrderType={setOrderType}/>
 
       <Items 
+      getTasks={getTasks}
       state={todos} 
       setTodos={setTodos} 
       showTasks={showTasks}/>

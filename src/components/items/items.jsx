@@ -4,7 +4,7 @@ import style from './items.module.css'
 
 
 
-let Items = ({state , setTodos, showTasks}) => {   
+let Items = ({state , setTodos, showTasks, getTasks}) => {   
     console.log(state); 
 // Function 'Delete task'    
     const delItem = (id) =>{
@@ -18,12 +18,9 @@ let Items = ({state , setTodos, showTasks}) => {
         axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/1/${e.uuid}`,{
             name: e.name,
             done: !e.done
-        }).then(
-            e.done=!e.done,
-        )
-        
-        // localStorage.setItem('todos', JSON.stringify(state))
-        // setTodos(JSON.parse(localStorage.getItem('todos'))) 
+        }).then((res) => {
+            getTasks()
+        })
     }
 //onDblClick event for switch attribute 'contentEditable' on tag 'span'
     const enableContentEditable = (e) =>{
