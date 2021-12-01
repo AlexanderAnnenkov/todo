@@ -1,31 +1,30 @@
-.pagination{
-    display: flex;
-    list-style: none;
-    margin: 25px 0px;
-    justify-content: space-between;
-
+.pagination {
+  display: flex;
+  list-style: none;
+  margin: 25px 0px;
+  justify-content: space-between;
 }
 
 /* Number page (li) */
-.page{
-    border: 1px solid black;
-    border-radius: 5px;
-    margin: 0 10px;
-    width: 30px;
-    text-align: center;
-    transition: 0.4s;
+.page {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 0 10px;
+  width: 30px;
+  text-align: center;
+  transition: 0.4s;
 }
-.active{
-    border: 1px solid black;
-    border-radius: 5px;
-    margin: 0 10px;
-    width: 30px;
-    text-align: center;
-    transition: 0.4s;
-    background-color: skyblue;
+.active {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 0 10px;
+  width: 30px;
+  text-align: center;
+  transition: 0.4s;
+  background-color: skyblue;
 }
-.page:hover{
-    cursor: alias;
-    background-color: skyblue;
-    transition: 0.4s;
+.page:hover {
+  cursor: alias;
+  background-color: skyblue;
+  transition: 0.4s;
 }
