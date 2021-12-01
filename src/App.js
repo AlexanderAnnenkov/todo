@@ -9,7 +9,7 @@ import Input from "./components/input/input";
 function App() {
   const [text, setText] = useState('');
   const [filtredType, setFiltredType] = useState('')
-  const [orderType,setOrderType]= useState('')
+  const [orderType,setOrderType]= useState('asc')
   const [currentPage, setCurrentPage] = useState('0')
   const [todos, setTodos] = useState([])
   let allPages =[]      // Array with count number page
@@ -21,7 +21,6 @@ function App() {
       setTodos(res.data)
       
     })
-
   }, [text, filtredType, orderType])
   
   const getTasks = () => {
@@ -49,8 +48,9 @@ function App() {
       await axios.post("https://todo-api-learning.herokuapp.com/v1/task/1",{
         name:text,
         done:false,
-      }).then(res => console.log(res.data))
-      setText('')
+      })
+        setText('')
+        getTasks()
     }
   }
 // Render components  
@@ -70,7 +70,7 @@ function App() {
 
       <Items 
       getTasks={getTasks}
-      state={todos} 
+      state={todos}
       setTodos={setTodos} 
       showTasks={showTasks}/>
 

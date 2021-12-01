@@ -4,8 +4,9 @@ import style from './items.module.css'
 
 
 
-let Items = ({state , setTodos, showTasks, getTasks}) => {   
-    console.log(state); 
+let Items = ({state , setTodos, showTasks, getTasks}) => {
+    // let date = new Date(Date.parse(state[0].createdAt))
+
 // Function 'Delete task'    
     const delItem = (id) =>{
         axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/1/${id}`)
@@ -33,11 +34,20 @@ let Items = ({state , setTodos, showTasks, getTasks}) => {
     }
 //onKeyDown event for accept edit in 'Editmode'
     const editTask = (e, content) =>{
+        console.log(content);
         if (e.key === 'Enter'){
             if(e.target.textContent !==''){
+                const editTask = e.target.textContent;
                 content.name = e.target.textContent
-                localStorage.setItem('todos', JSON.stringify(state))
-                e.target.contentEditable = false
+                axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/1/${content.uuid}`, {
+                    name:editTask,
+                    done:false
+                })
+                .then((res) =>{
+                    console.log(editTask)
+                    e.target.contentEditable = false
+                    getTasks()
+                })
             } else {
                 e.target.textContent = content.name
                 e.target.contentEditable=false
@@ -49,7 +59,9 @@ let Items = ({state , setTodos, showTasks, getTasks}) => {
             e.target.contentEditable=false
         }
     }
-    
+    // let date = new Date(Date.parse(showTasks[0].createdAt))
+
+    // console.log(date.toLocaleString());
     return(
         <ul className={style.items}>
         {showTasks.map(t => 
@@ -66,7 +78,7 @@ let Items = ({state , setTodos, showTasks, getTasks}) => {
             className={style.text}>{t.name}</span>
 
             <span 
-            className={style.date}>{t.date}</span>
+            className={style.date}>{(new Date(Date.parse(t.createdAt))).toLocaleString()}</span>
 
             <span 
             onClick={() => {delItem(t.uuid)}} 
