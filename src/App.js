@@ -10,7 +10,7 @@ import Alert from "@mui/material/Alert"
 function App() {
   const [text, setText] = useState("")
   const [filtredType, setFiltredType] = useState("")
-  const [orderType, setOrderType] = useState("asc")
+  const [orderType, setOrderType] = useState("")
   const [currentPage, setCurrentPage] = useState("0")
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
