@@ -8,7 +8,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
   // Function 'Delete task'
   const delItem = (id) => {
     try{axios
-      .delete(`https://todo-api-learning.herokuapp.com/v1/task/1/${id}`)
+      .delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`)
         let newTodos = state.filter((e) => e.uuid !== id)
         setTodos(newTodos)
     }
@@ -19,8 +19,9 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
   }
   //Funcion 'Edit check'
   const switchCheck = (e) => {
-    try{axios
-      .patch(`https://todo-api-learning.herokuapp.com/v1/task/1/${e.uuid}`, {
+    try{console.log(e);
+      axios
+      .patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`, {
         name: e.name,
         done: !e.done,
       })
@@ -28,6 +29,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
     }catch (err) {
         setAlert(err.response.data.message)
         setTriggerError(true)
+        
     }
       
   }
@@ -49,7 +51,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
           content.name = e.target.textContent
           await axios
             .patch(
-              `https://todo-api-learning.herokuapp.com/v1/task/1/${content.uuid}`,
+              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
               {
                 name: editTask,
                 done: false,
@@ -99,7 +101,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
           </span>
 
           <span className={style.date}>
-            {new Date(Date.parse(t.createdAt)).toLocaleString()}
+            {new Date(Date.parse(t.date)).toLocaleString()}
           </span>
 
           <span

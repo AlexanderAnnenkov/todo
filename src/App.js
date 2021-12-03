@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     axios
       .get(
-        `https://todo-api-learning.herokuapp.com/v1/tasks/1?filterBy=${filtredType}&${orderType}`
+        `https://heroku-backend-app-for-todo.herokuapp.com/tasks/?filterBy=${filtredType}&${orderType}`
       )
       .then((res) => {
         setTodos(res.data)
@@ -31,7 +31,7 @@ function App() {
   const getTasks = () => {
     axios
       .get(
-        `https://todo-api-learning.herokuapp.com/v1/tasks/1?filterBy=${filtredType}&${orderType}`
+        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}`
       )
       .then((res) => {
         setTodos(res.data)
@@ -53,14 +53,14 @@ function App() {
   const sendTask = async (event) => {
     try {
       if (event.key === "Enter" && event.target.value !== "") {
-        await axios.post("https://todo-api-learning.herokuapp.com/v1/task/1", {
+        await axios.post("https://heroku-backend-app-for-todo.herokuapp.com/task", {
           name: text,
-          done: false,
         })
         setText("")
         getTasks()
       }
     } catch (err) {
+      console.log(err);
       setAlert(err.response.data.message)
       setTriggerError(true)
     }
