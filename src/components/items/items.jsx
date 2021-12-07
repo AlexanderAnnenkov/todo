@@ -2,36 +2,43 @@ import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
 
-let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert }) => {
+let Items = ({
+  state,
+  setTodos,
+  showTasks,
+  getTasks,
+  setTriggerError,
+  setAlert,
+}) => {
   // let date = new Date(Date.parse(state[0].createdAt))
 
   // Function 'Delete task'
   const delItem = (id) => {
-    try{axios
-      .delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`)
-        let newTodos = state.filter((e) => e.uuid !== id)
-        setTodos(newTodos)
-    }
-      catch (err) {
-        setAlert(err.response.data.message)
-        setTriggerError(true)
+    try {
+      axios.delete(`http://localhost:3001/task/${id}`)
+      getTasks()
+      // let newTodos = state.filter((e) => e.uuid !== id)
+      // setTodos(newTodos)
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
   }
   //Funcion 'Edit check'
-  const switchCheck = (e) => {
-    try{console.log(e);
-      axios
-      .patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`, {
+  const switchCheck = async(e) => {
+    try {
+      console.log(e)
+      const res =  await axios.patch(`http://localhost:3001/task/${e.uuid}`, {
         name: e.name,
         done: !e.done,
       })
-        getTasks()
-    }catch (err) {
-        setAlert(err.response.data.message)
-        setTriggerError(true)
-        
-    }
+      e.done = res.data.item.done
+      getTasks()
+    } catch (err) {
       
+      setAlert(err.response.data.message)
+      setTriggerError(true)
+    }
   }
   //onDblClick event for switch attribute 'contentEditable' on tag 'span'
   const enableContentEditable = (e) => {
@@ -43,22 +50,18 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
     e.target.textContent = content.name
   }
   //onKeyDown event for accept edit in 'Editmode'
-  const editTask = async(e, content) => {
+  const editTask = async (e, content) => {
     try {
       if (e.key === "Enter") {
         if (e.target.textContent !== "") {
           const editTask = e.target.textContent
           content.name = e.target.textContent
           await axios
-            .patch(
-              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
-              {
-                name: editTask,
-                done: false,
-              }
-            )
+            .patch(`http://localhost:3001/task/${content.uuid}`, {
+              name: editTask,
+              done: false,
+            })
             .then((res) => {
-              console.log(editTask)
               e.target.contentEditable = false
               getTasks()
             })
@@ -71,9 +74,9 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
         e.target.textContent = content.name
         e.target.contentEditable = false
       }
-    }catch (err) {
-        setAlert(err.response.data.message)
-        setTriggerError(true)
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
   }
   // let date = new Date(Date.parse(showTasks[0].createdAt))
@@ -101,7 +104,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
           </span>
 
           <span className={style.date}>
-            {new Date(Date.parse(t.date)).toLocaleString()}
+            {new Date(Date.parse(t.createdAt)).toLocaleString()}
           </span>
 
           <span
