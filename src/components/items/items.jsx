@@ -2,20 +2,11 @@ import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
 
-let Items = ({
-  state,
-  setTodos,
-  showTasks,
-  getTasks,
-  setTriggerError,
-  setAlert,
-}) => {
-  // let date = new Date(Date.parse(state[0].createdAt))
-
+let Items = ({ showTasks, getTasks, setTriggerError, setAlert }) => {
   // Function 'Delete task'
-  const delItem = (id) => {
+  const delItem = async (id) => {
     try {
-      axios.delete(`http://localhost:3001/task/${id}`)
+      await axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`)
       getTasks()
       // let newTodos = state.filter((e) => e.uuid !== id)
       // setTodos(newTodos)
@@ -25,17 +16,16 @@ let Items = ({
     }
   }
   //Funcion 'Edit check'
-  const switchCheck = async(e) => {
+  const switchCheck = async (e) => {
     try {
       console.log(e)
-      const res =  await axios.patch(`http://localhost:3001/task/${e.uuid}`, {
+      const res = await axios.patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`, {
         name: e.name,
         done: !e.done,
       })
       e.done = res.data.item.done
       getTasks()
     } catch (err) {
-      
       setAlert(err.response.data.message)
       setTriggerError(true)
     }
@@ -57,7 +47,7 @@ let Items = ({
           const editTask = e.target.textContent
           content.name = e.target.textContent
           await axios
-            .patch(`http://localhost:3001/task/${content.uuid}`, {
+            .patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`, {
               name: editTask,
               done: false,
             })
@@ -79,7 +69,6 @@ let Items = ({
       setTriggerError(true)
     }
   }
-  // let date = new Date(Date.parse(showTasks[0].createdAt))
 
   // console.log(date.toLocaleString());
   return (
