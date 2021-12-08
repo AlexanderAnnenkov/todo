@@ -9,8 +9,8 @@ import Alert from "@mui/material/Alert"
 
 function App() {
   const [text, setText] = useState("")
-  const [filtredType, setFiltredType] = useState("")
-  const [orderType, setOrderType] = useState("")
+  const [filtredType, setFiltredType] = useState("all")
+  const [orderType, setOrderType] = useState("asc")
   const [currentPage, setCurrentPage] = useState("0")
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     axios
       .get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks/?filterBy=${filtredType}&${orderType}`
+        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`
       )
       .then((res) => {
         setTodos(res.data)
@@ -31,7 +31,7 @@ function App() {
   const getTasks = () => {
     axios
       .get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}`
+        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`
       )
       .then((res) => {
         setTodos(res.data)
@@ -60,7 +60,7 @@ function App() {
         getTasks()
       }
     } catch (err) {
-      console.log(err);
+      console.log(err.response ,'123123123');
       setAlert(err.response.data.message)
       setTriggerError(true)
     }
