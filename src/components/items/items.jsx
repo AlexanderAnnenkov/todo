@@ -2,36 +2,57 @@ import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
 
-let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert }) => {
+let Items = ({
+  state,
+  setTodos,
+  showTasks,
+  getTasks,
+  setTriggerError,
+  setAlert,
+}) => {
+  const token = localStorage.getItem("accessToken")
   // let date = new Date(Date.parse(state[0].createdAt))
 
   // Function 'Delete task'
   const delItem = (id) => {
-    try{axios
-      .delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`)
-        let newTodos = state.filter((e) => e.uuid !== id)
-        setTodos(newTodos)
-    }
-      catch (err) {
-        setAlert(err.response.data.message)
-        setTriggerError(true)
+    try {
+      axios.delete(`http://localhost:3002/task/${id}`, {
+        headers: {
+          authorization: `${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      })
+      let newTodos = state.filter((e) => e.uuid !== id)
+      setTodos(newTodos)
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
   }
   //Funcion 'Edit check'
-  const switchCheck = (e) => {
-    try{console.log(e);
-      axios
-      .patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`, {
-        name: e.name,
-        done: !e.done,
-      })
-        getTasks()
-    }catch (err) {
-        setAlert(err.response.data.message)
-        setTriggerError(true)
-        
+  const switchCheck = async (e) => {
+    try {
+      console.log(e)
+      await axios.patch(
+        `http://localhost:3002/task/${e.uuid}`,
+        {
+          name: e.name,
+          done: !e.done,
+        },
+        {
+          headers: {
+            authorization: `${token}`,
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
+      )
+      getTasks()
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
-      
   }
   //onDblClick event for switch attribute 'contentEditable' on tag 'span'
   const enableContentEditable = (e) => {
@@ -43,7 +64,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
     e.target.textContent = content.name
   }
   //onKeyDown event for accept edit in 'Editmode'
-  const editTask = async(e, content) => {
+  const editTask = async (e, content) => {
     try {
       if (e.key === "Enter") {
         if (e.target.textContent !== "") {
@@ -51,10 +72,17 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
           content.name = e.target.textContent
           await axios
             .patch(
-              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
+              `http://localhost:3002/task/${content.uuid}`,
               {
                 name: editTask,
                 done: false,
+              },
+              {
+                headers: {
+                  authorization: `${token}`,
+                  "Access-Control-Allow-Origin": "*",
+                  "Content-Type": "application/json;charset=utf-8",
+                },
               }
             )
             .then((res) => {
@@ -71,9 +99,9 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
         e.target.textContent = content.name
         e.target.contentEditable = false
       }
-    }catch (err) {
-        setAlert(err.response.data.message)
-        setTriggerError(true)
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
   }
   // let date = new Date(Date.parse(showTasks[0].createdAt))
@@ -101,7 +129,7 @@ let Items = ({ state, setTodos, showTasks, getTasks,setTriggerError, setAlert })
           </span>
 
           <span className={style.date}>
-            {new Date(Date.parse(t.date)).toLocaleString()}
+            {new Date(Date.parse(t.createdAt)).toLocaleString()}
           </span>
 
           <span
