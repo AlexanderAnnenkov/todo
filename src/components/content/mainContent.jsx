@@ -17,25 +17,29 @@ function MainContent() {
   const [triggerError, setTriggerError] = useState(false)
   let allPages = [] // Array with count number page
   let showTasks = [] // Array for render 5 task in page
+  const token = localStorage.getItem("accessToken")
+  // console.log(token)
 
   useEffect(() => {
-    axios
-      .get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`
-      )
-      .then((res) => {
-        setTodos(res.data)
-      })
+    getTasks()
+    
   }, [text, filtredType, orderType])
 
-  const getTasks = () => {
-    axios
-      .get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`
+  const getTasks = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:3002/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
+        {
+          headers: {
+            authorization: localStorage.getItem("accessToken"),
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
       )
-      .then((res) => {
-        setTodos(res.data)
-      })
+      setTodos(result.data)
+    } catch (err) {
+      console.log(err)
+    }
   }
   // const for count page
   const countPages = Math.ceil(todos.length / 5)
@@ -53,13 +57,22 @@ function MainContent() {
   const sendTask = async (event) => {
     try {
       if (event.key === "Enter" && event.target.value !== "") {
-        await axios.post("https://heroku-backend-app-for-todo.herokuapp.com/task", {
-          name: text,
-        })
+        await axios.post(
+          "http://localhost:3002/task",
+          { name: text },
+          {
+            headers: {
+              authorization: `${token}`,
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json;charset=utf-8",
+            },
+          }
+        )
         setText("")
         getTasks()
       }
     } catch (err) {
+      // console.log(err)
       console.log(err.response ,'123123123');
       setAlert(err.response.data.message)
       setTriggerError(true)
@@ -68,7 +81,11 @@ function MainContent() {
   // Render components
   return (
     <div className={style.app}>
-      {triggerError && <Alert severity="error" onClose={()=> setTriggerError(false)} >{alert}</Alert>}
+      {triggerError && (
+        <Alert severity="error" onClose={() => setTriggerError(false)}>
+          {alert}
+        </Alert>
+      )}
 
       <h1 className={style.title}>ToDo List</h1>
 
