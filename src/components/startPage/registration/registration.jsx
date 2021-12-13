@@ -3,12 +3,15 @@ import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import style from "../startPage.module.css"
 import axios from "axios"
+import Alert from "@mui/material/Alert"
 import { useNavigate } from "react-router"
 
 const Registration = () => {
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const [repeatPass, setRepeatPassword] = useState("")
+  const [alert, setAlert] = useState("")
+  const [triggerError, setTriggerError] = useState(false)
   const navigate=useNavigate()
 
   const sendUser = async (e) => {
@@ -27,8 +30,9 @@ const Registration = () => {
         setRepeatPassword("")
         navigate('/main')      
     } catch (err) {
-
-      console.log(err)
+      setAlert(err.response.data);
+      setTriggerError(true)
+      
     }
   }
 
@@ -46,6 +50,11 @@ const Registration = () => {
 
   return (
     <div className={style.container}>
+      {triggerError && (
+          <Alert severity="error" onClose={() => setTriggerError(false)}>
+            {alert}
+          </Alert>
+        )}
       <h1 className={style.text}>Todo List</h1>
       <h2 className={style.text}>Registration</h2>
       <form action="post" onSubmit={sendUser}>

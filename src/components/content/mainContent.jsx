@@ -42,7 +42,7 @@ function MainContent() {
       
       setTodos(result.data)
     } catch (err) {
-      console.log(err)
+      console.log(err.response)
     }
   }
   // const for count page
