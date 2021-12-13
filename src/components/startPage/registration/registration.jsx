@@ -18,13 +18,18 @@ const Registration = () => {
     try {
       e.preventDefault()
         if (password !== repeatPass) {
-          return alert("Password no identify")
+          setTriggerError(true)
+          return  setAlert("Password no identify")
+        }
+        if(password.length <= 8){
+          setTriggerError(true)
+          return setAlert("Password length less 8 symbols")          
         }
         const user = await axios.post("http://localhost:3002/registration", {
           login: login,
           password: password,
         })
-        localStorage.setItem('accessToken', user.data)
+        localStorage.setItem('accessToken', user.data.jwtToken)
         setLogin("")
         setPassword("")
         setRepeatPassword("")
@@ -64,13 +69,14 @@ const Registration = () => {
             label="Login"
             onChange={onNewLogin}
             value={login}
+            autoComplete="off"
           />
         </div>
         <div className={style.pwrd}>
           <TextField
             label="Password"
             type="password"
-            autoComplete="current-password"
+            autoComplete="off"
             onChange={onNewPassword}
             value={password}
           />
@@ -79,7 +85,7 @@ const Registration = () => {
           <TextField
             label="Repeat Password"
             type="password"
-            autoComplete="current-password"
+            autoComplete="off"
             onChange={onRepeatPass}
             value={repeatPass}
           />
