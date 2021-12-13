@@ -42,7 +42,8 @@ function MainContent() {
       
       setTodos(result.data)
     } catch (err) {
-      console.log(err.response)
+      setAlert(err.response.data)
+      setTriggerError(true)
     }
   }
   // const for count page
@@ -76,9 +77,7 @@ function MainContent() {
         getTasks()
       }
     } catch (err) {
-      // console.log(err)
-      console.log(err.response, "123123123")
-      setAlert(err.response.data.message)
+      setAlert(err.response.data)
       setTriggerError(true)
     }
   }
