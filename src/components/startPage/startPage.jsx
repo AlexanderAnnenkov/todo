@@ -31,7 +31,7 @@ const StartPage = () => {
         login,
         password,
       })
-      localStorage.setItem("accessToken", user.data)
+      localStorage.setItem("accessToken", user.data.jwtToken)
       setLogin("")
       setPassword("")
       navigate("/main")
@@ -56,6 +56,7 @@ const StartPage = () => {
             label="Login"
             onChange={onNewLogin}
             value={login}
+            autoComplete="off"
           />
         </div>
         <div className={style.pwrd}>
@@ -64,9 +65,9 @@ const StartPage = () => {
             id="outlined-password-input"
             label="Password"
             type="password"
-            autoComplete="current-password"
             onChange={onNewPassword}
             value={password}
+            autoComplete="off"
           />
         </div>
         <div className={style.btn}>
