@@ -6,6 +6,8 @@ import Pagination from "../pagination/pagination"
 import axios from "axios"
 import Input from "../input/input"
 import Alert from "@mui/material/Alert"
+import Button from "@mui/material/Button"
+import { useNavigate} from "react-router"
 
 function MainContent() {
   const [text, setText] = useState("")
@@ -15,18 +17,19 @@ function MainContent() {
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
   const [triggerError, setTriggerError] = useState(false)
+  const navigate = useNavigate()
   let allPages = [] // Array with count number page
   let showTasks = [] // Array for render 5 task in page
   const token = localStorage.getItem("accessToken")
-  // console.log(token)
-
-  useEffect(() => {
+  
+  useEffect(() => { 
     getTasks()
-    
   }, [text, filtredType, orderType])
-
+  
+  
   const getTasks = async () => {
     try {
+      if(!localStorage.getItem("accessToken")) return navigate('/login')
       const result = await axios.get(
         `http://localhost:3002/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
         {
@@ -36,6 +39,7 @@ function MainContent() {
           },
         }
       )
+      
       setTodos(result.data)
     } catch (err) {
       console.log(err)
@@ -73,45 +77,54 @@ function MainContent() {
       }
     } catch (err) {
       // console.log(err)
-      console.log(err.response ,'123123123');
+      console.log(err.response, "123123123")
       setAlert(err.response.data.message)
       setTriggerError(true)
     }
   }
+  const exitAccount =() =>{
+    localStorage.removeItem('accessToken')
+    navigate('/login')
+  }
   // Render components
   return (
-    <div className={style.app}>
-      {triggerError && (
-        <Alert severity="error" onClose={() => setTriggerError(false)}>
-          {alert}
-        </Alert>
-      )}
+    <div>
+      <div className={style.btnExt}>
+        <Button variant="text" onClick={()=>{exitAccount()}}>Exit</Button>
+      </div>
+      <div className={style.app}>
+        {triggerError && (
+          <Alert severity="error" onClose={() => setTriggerError(false)}>
+            {alert}
+          </Alert>
+        )}
 
-      <h1 className={style.title}>ToDo List</h1>
+        <h1 className={style.title}>ToDo List</h1>
 
-      <Input sendTask={sendTask} onNewTextTask={onNewTextTask} text={text} />
+        <Input sendTask={sendTask} onNewTextTask={onNewTextTask} text={text} />
 
-      <Buttons
-        setFiltredType={setFiltredType}
-        filtredType={filtredType}
-        orderType={orderType}
-        setOrderType={setOrderType}
-      />
+        <Buttons
+          setFiltredType={setFiltredType}
+          filtredType={filtredType}
+          orderType={orderType}
+          setOrderType={setOrderType}
+        />
 
-      <Items
-        getTasks={getTasks}
-        state={todos}
-        setTodos={setTodos}
-        showTasks={showTasks}
-        setTriggerError={setTriggerError}
-        setAlert={setAlert}
-      />
+        <Items
+          getTasks={getTasks}
+          state={todos}
+          setTodos={setTodos}
+          showTasks={showTasks}
+          setTriggerError={setTriggerError}
+          setAlert={setAlert}
+        />
 
-      <Pagination
-        allPages={allPages}
-        setCurrentPage={setCurrentPage}
-        currentPage={currentPage}
-      />
+        <Pagination
+          allPages={allPages}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
+      </div>
     </div>
   )
 }

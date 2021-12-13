@@ -2,13 +2,15 @@ import React, { useState } from "react"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import style from "./startPage.module.css"
-import { NavLink, useNavigate } from "react-router-dom"
+import { NavLink, useNavigate, Navigate } from "react-router-dom"
 import axios from "axios"
 
 const StartPage = () => {
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
+
+  if (localStorage.getItem("accessToken")) return <Navigate replace to='/main'/>
 
   const onNewLogin = (e) => {
     setLogin(e.target.value)
@@ -24,13 +26,13 @@ const StartPage = () => {
 
       const user = await axios.post("http://localhost:3002/login", {
         login,
-        password
+        password,
       })
       localStorage.setItem("accessToken", user.data)
-      navigate("/main")
+
       setLogin("")
       setPassword("")
-      // console.log(user.data)
+      navigate("/main")
     } catch (err) {
       console.log(err)
     }

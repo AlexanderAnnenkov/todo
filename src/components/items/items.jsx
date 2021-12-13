@@ -33,7 +33,6 @@ let Items = ({
   //Funcion 'Edit check'
   const switchCheck = async (e) => {
     try {
-      console.log(e)
       await axios.patch(
         `http://localhost:3002/task/${e.uuid}`,
         {
@@ -86,7 +85,6 @@ let Items = ({
               }
             )
             .then((res) => {
-              console.log(editTask)
               e.target.contentEditable = false
               getTasks()
             })
@@ -106,7 +104,7 @@ let Items = ({
   }
   // let date = new Date(Date.parse(showTasks[0].createdAt))
 
-  // console.log(date.toLocaleString());
+
   return (
     <ul className={style.items}>
       {showTasks.map((t) => (

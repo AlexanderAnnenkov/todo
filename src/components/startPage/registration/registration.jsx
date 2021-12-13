@@ -22,12 +22,10 @@ const Registration = () => {
           password: password,
         })
         localStorage.setItem('accessToken', user.data)
-        navigate('/main')
         setLogin("")
         setPassword("")
         setRepeatPassword("")
-        console.log(user.data)
-      
+        navigate('/main')      
     } catch (err) {
 
       console.log(err)
