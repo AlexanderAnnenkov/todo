@@ -25,6 +25,7 @@ let Items = ({
       })
       let newTodos = state.filter((e) => e.uuid !== id)
       setTodos(newTodos)
+
     } catch (err) {
       setAlert(err.response.data.message)
       setTriggerError(true)
@@ -46,7 +47,7 @@ let Items = ({
             "Content-Type": "application/json;charset=utf-8",
           },
         }
-      )
+      )     
       getTasks()
     } catch (err) {
       setAlert(err.response.data.message)
@@ -102,7 +103,6 @@ let Items = ({
       setTriggerError(true)
     }
   }
-  // let date = new Date(Date.parse(showTasks[0].createdAt))
 
 
   return (
