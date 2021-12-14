@@ -16,7 +16,7 @@ let Items = ({
   // Function 'Delete task'
   const delItem = (id) => {
     try {
-      axios.delete(`http://localhost:3002/task/${id}`, {
+      axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
@@ -34,7 +34,7 @@ let Items = ({
   const switchCheck = async (e) => {
     try {
       await axios.patch(
-        `http://localhost:3002/task/${e.uuid}`,
+        `https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`,
         {
           name: e.name,
           done: !e.done,
@@ -71,7 +71,7 @@ let Items = ({
           content.name = e.target.textContent
           await axios
             .patch(
-              `http://localhost:3002/task/${content.uuid}`,
+              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
               {
                 name: editTask,
                 done: false,

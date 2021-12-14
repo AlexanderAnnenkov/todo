@@ -12,32 +12,34 @@ const Registration = () => {
   const [repeatPass, setRepeatPassword] = useState("")
   const [alert, setAlert] = useState("")
   const [triggerError, setTriggerError] = useState(false)
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
   const sendUser = async (e) => {
     try {
       e.preventDefault()
-        if (password !== repeatPass) {
-          setTriggerError(true)
-          return  setAlert("Password no identify")
-        }
-        if(password.length <= 8){
-          setTriggerError(true)
-          return setAlert("Password length less 8 symbols")          
-        }
-        const user = await axios.post("http://localhost:3002/registration", {
+      if (password !== repeatPass) {
+        setTriggerError(true)
+        return setAlert("Password no identify")
+      }
+      if (password.length <= 8) {
+        setTriggerError(true)
+        return setAlert("Password length less 8 symbols")
+      }
+      const user = await axios.post(
+        "https://heroku-backend-app-for-todo.herokuapp.com/registration",
+        {
           login: login,
           password: password,
-        })
-        localStorage.setItem('accessToken', user.data.jwtToken)
-        setLogin("")
-        setPassword("")
-        setRepeatPassword("")
-        navigate('/main')      
+        }
+      )
+      localStorage.setItem("accessToken", user.data.jwtToken)
+      setLogin("")
+      setPassword("")
+      setRepeatPassword("")
+      navigate("/main")
     } catch (err) {
-      setAlert(err.response.data);
+      setAlert(err.response.data)
       setTriggerError(true)
-      
     }
   }
 
@@ -56,10 +58,10 @@ const Registration = () => {
   return (
     <div className={style.container}>
       {triggerError && (
-          <Alert severity="error" onClose={() => setTriggerError(false)}>
-            {alert}
-          </Alert>
-        )}
+        <Alert severity="error" onClose={() => setTriggerError(false)}>
+          {alert}
+        </Alert>
+      )}
       <h1 className={style.text}>Todo List</h1>
       <h2 className={style.text}>Registration</h2>
       <form action="post" onSubmit={sendUser}>
