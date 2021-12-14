@@ -2,14 +2,30 @@ import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
 
-let Items = ({ showTasks, getTasks, setTriggerError, setAlert }) => {
+let Items = ({
+  state,
+  setTodos,
+  showTasks,
+  getTasks,
+  setTriggerError,
+  setAlert,
+}) => {
+  const token = localStorage.getItem("accessToken")
+  // let date = new Date(Date.parse(state[0].createdAt))
+
   // Function 'Delete task'
-  const delItem = async (id) => {
+  const delItem = (id) => {
     try {
-      await axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`)
-      getTasks()
-      // let newTodos = state.filter((e) => e.uuid !== id)
-      // setTodos(newTodos)
+      axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`, {
+        headers: {
+          authorization: `${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      })
+      let newTodos = state.filter((e) => e.uuid !== id)
+      setTodos(newTodos)
+
     } catch (err) {
       setAlert(err.response.data.message)
       setTriggerError(true)
@@ -18,12 +34,20 @@ let Items = ({ showTasks, getTasks, setTriggerError, setAlert }) => {
   //Funcion 'Edit check'
   const switchCheck = async (e) => {
     try {
-      console.log(e)
-      const res = await axios.patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`, {
-        name: e.name,
-        done: !e.done,
-      })
-      e.done = res.data.item.done
+      await axios.patch(
+        `https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`,
+        {
+          name: e.name,
+          done: !e.done,
+        },
+        {
+          headers: {
+            authorization: `${token}`,
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
+      )     
       getTasks()
     } catch (err) {
       setAlert(err.response.data.message)
@@ -47,10 +71,20 @@ let Items = ({ showTasks, getTasks, setTriggerError, setAlert }) => {
           const editTask = e.target.textContent
           content.name = e.target.textContent
           await axios
-            .patch(`https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`, {
-              name: editTask,
-              done: false,
-            })
+            .patch(
+              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
+              {
+                name: editTask,
+                done: false,
+              },
+              {
+                headers: {
+                  authorization: `${token}`,
+                  "Access-Control-Allow-Origin": "*",
+                  "Content-Type": "application/json;charset=utf-8",
+                },
+              }
+            )
             .then((res) => {
               e.target.contentEditable = false
               getTasks()
@@ -70,7 +104,7 @@ let Items = ({ showTasks, getTasks, setTriggerError, setAlert }) => {
     }
   }
 
-  // console.log(date.toLocaleString());
+
   return (
     <ul className={style.items}>
       {showTasks.map((t) => (
