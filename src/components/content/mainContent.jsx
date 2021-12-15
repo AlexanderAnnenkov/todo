@@ -31,7 +31,7 @@ function MainContent() {
     try {
       if(!localStorage.getItem("accessToken")) return navigate('/login')
       const result = await axios.get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
+        `http://localhost:3002/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
         {
           headers: {
             authorization: localStorage.getItem("accessToken"),
@@ -63,7 +63,7 @@ function MainContent() {
     try {
       if (event.key === "Enter" && event.target.value !== "") {
         await axios.post(
-          "https://heroku-backend-app-for-todo.herokuapp.com/task",
+          "http://localhost:3002/task",
           { name: text },
           {
             headers: {

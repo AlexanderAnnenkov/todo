@@ -13,7 +13,8 @@ const StartPage = () => {
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
 
-  if (localStorage.getItem("accessToken")) return <Navigate replace to='/main'/>
+  if (localStorage.getItem("accessToken"))
+    return <Navigate replace to="/main" />
 
   const onNewLogin = (e) => {
     setLogin(e.target.value)
@@ -27,7 +28,7 @@ const StartPage = () => {
     try {
       e.preventDefault()
 
-      const user = await axios.post("https://heroku-backend-app-for-todo.herokuapp.com/login", {
+      const user = await axios.post("http://localhost:3002/login", {
         login,
         password,
       })
@@ -36,7 +37,7 @@ const StartPage = () => {
       setPassword("")
       navigate("/main")
     } catch (err) {
-      setAlert(err.response.data);
+      setAlert(err.response.data)
       setTriggerError(true)
     }
   }
@@ -44,14 +45,15 @@ const StartPage = () => {
   return (
     <div className={style.container}>
       {triggerError && (
-          <Alert severity="error" onClose={() => setTriggerError(false)}>
-            {alert}
-          </Alert>
-        )}
+        <Alert severity="error" onClose={() => setTriggerError(false)}>
+          {alert}
+        </Alert>
+      )}
       <h1 className={style.text}>Todo List</h1>
       <form action="post" onSubmit={sendUser}>
         <div className={style.login}>
           <TextField
+            required
             id="outlined-required"
             label="Login"
             onChange={onNewLogin}

@@ -10,13 +10,13 @@ let Items = ({
   setTriggerError,
   setAlert,
 }) => {
+
   const token = localStorage.getItem("accessToken")
-  // let date = new Date(Date.parse(state[0].createdAt))
 
   // Function 'Delete task'
   const delItem = (id) => {
     try {
-      axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`, {
+      axios.delete(`http://localhost:3002/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
@@ -31,11 +31,12 @@ let Items = ({
       setTriggerError(true)
     }
   }
+
   //Funcion 'Edit check'
   const switchCheck = async (e) => {
     try {
       await axios.patch(
-        `https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`,
+        `http://localhost:3002/task/${e.uuid}`,
         {
           name: e.name,
           done: !e.done,
@@ -54,15 +55,18 @@ let Items = ({
       setTriggerError(true)
     }
   }
+
   //onDblClick event for switch attribute 'contentEditable' on tag 'span'
   const enableContentEditable = (e) => {
     e.target.contentEditable = true
   }
+
   //onBlur event for switch attribute 'contentEditable' on tag 'span' when click on body site
   const disableBlur = (e, content) => {
     e.target.contentEditable = false
     e.target.textContent = content.name
   }
+
   //onKeyDown event for accept edit in 'Editmode'
   const editTask = async (e, content) => {
     try {
@@ -103,7 +107,6 @@ let Items = ({
       setTriggerError(true)
     }
   }
-
 
   return (
     <ul className={style.items}>

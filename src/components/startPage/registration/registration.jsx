@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField"
 import style from "../startPage.module.css"
 import axios from "axios"
 import Alert from "@mui/material/Alert"
-import { useNavigate } from "react-router"
+import { NavLink } from "react-router-dom"
 
 const Registration = () => {
   const [login, setLogin] = useState("")
@@ -12,7 +12,6 @@ const Registration = () => {
   const [repeatPass, setRepeatPassword] = useState("")
   const [alert, setAlert] = useState("")
   const [triggerError, setTriggerError] = useState(false)
-  const navigate = useNavigate()
 
   const sendUser = async (e) => {
     try {
@@ -21,22 +20,15 @@ const Registration = () => {
         setTriggerError(true)
         return setAlert("Password no identify")
       }
-      if (password.length <= 8) {
-        setTriggerError(true)
-        return setAlert("Password length less 8 symbols")
-      }
-      const user = await axios.post(
-        "https://heroku-backend-app-for-todo.herokuapp.com/registration",
-        {
-          login: login,
-          password: password,
-        }
-      )
+      const user = await axios.post("http://localhost:3002/registration", {
+        login: login,
+        password: password,
+      })
       localStorage.setItem("accessToken", user.data.jwtToken)
       setLogin("")
       setPassword("")
       setRepeatPassword("")
-      navigate("/main")
+      // navigate("/main")
     } catch (err) {
       setAlert(err.response.data)
       setTriggerError(true)
@@ -67,6 +59,7 @@ const Registration = () => {
       <form action="post" onSubmit={sendUser}>
         <div className={style.login}>
           <TextField
+            required
             id="outlined-required"
             label="Login"
             onChange={onNewLogin}
@@ -76,6 +69,7 @@ const Registration = () => {
         </div>
         <div className={style.pwrd}>
           <TextField
+            required
             label="Password"
             type="password"
             autoComplete="off"
@@ -85,6 +79,7 @@ const Registration = () => {
         </div>
         <div className={style.pwrd1}>
           <TextField
+            required
             label="Repeat Password"
             type="password"
             autoComplete="off"
@@ -96,6 +91,12 @@ const Registration = () => {
           <Button type="submit">Sign up</Button>
         </div>
       </form>
+      <p className={style.textDescript}>If you have account, sign in!</p>
+      <span className={style.btn1}>
+        <NavLink to="/login">
+          <Button>Sign in</Button>
+        </NavLink>
+      </span>
     </div>
   )
 }
