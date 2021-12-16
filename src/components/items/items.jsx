@@ -1,9 +1,7 @@
-import axios from "axios";
-import React  from "react";
-import style from "./items.module.css";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-
-
+import axios from "axios"
+import React from "react"
+import style from "./items.module.css"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 let Items = ({
   state,
@@ -12,28 +10,26 @@ let Items = ({
   getTasks,
   setTriggerError,
   setAlert,
-  setShowTasks
+  setShowTasks,
 }) => {
-
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken")
 
   // Function 'Delete task'
-  const delItem = (id) => {
+  const delItem = async(id) => {
     try {
-      axios.delete(`http://localhost:3002/task/${id}`, {
+      await axios.delete(`http://localhost:3002/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json;charset=utf-8",
         },
-      });
-      let newTodos = state.filter((e) => e.uuid !== id);
-      setTodos(newTodos);
+      })
+      getTasks()
     } catch (err) {
-      setAlert(err.response.data.message);
-      setTriggerError(true);
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
-  };
+  }
 
   //Funcion 'Edit check'
   const switchCheck = async (e) => {
@@ -51,32 +47,32 @@ let Items = ({
             "Content-Type": "application/json;charset=utf-8",
           },
         }
-      );
-      getTasks();
+      )
+      getTasks()
     } catch (err) {
-      setAlert(err.response.data.message);
-      setTriggerError(true);
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
-  };
+  }
 
   //onDblClick event for switch attribute 'contentEditable' on tag 'span'
   const enableContentEditable = (e) => {
-    e.target.contentEditable = true;
-  };
+    e.target.contentEditable = true
+  }
 
   //onBlur event for switch attribute 'contentEditable' on tag 'span' when click on body site
   const disableBlur = (e, content) => {
-    e.target.contentEditable = false;
-    e.target.textContent = content.name;
-  };
+    e.target.contentEditable = false
+    e.target.textContent = content.name
+  }
 
   //onKeyDown event for accept edit in 'Editmode'
   const editTask = async (e, content) => {
     try {
       if (e.key === "Enter") {
         if (e.target.textContent !== "") {
-          const editTask = e.target.textContent;
-          content.name = e.target.textContent;
+          const editTask = e.target.textContent
+          content.name = e.target.textContent
           await axios
             .patch(
               `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
@@ -93,32 +89,48 @@ let Items = ({
               }
             )
             .then((res) => {
-              e.target.contentEditable = false;
-              getTasks();
-            });
+              e.target.contentEditable = false
+              getTasks()
+            })
         } else {
-          e.target.textContent = content.name;
-          e.target.contentEditable = false;
+          e.target.textContent = content.name
+          e.target.contentEditable = false
         }
       }
       if (e.key === "Escape") {
-        e.target.textContent = content.name;
-        e.target.contentEditable = false;
+        e.target.textContent = content.name
+        e.target.contentEditable = false
       }
     } catch (err) {
-      setAlert(err.response.data.message);
-      setTriggerError(true);
+      setAlert(err.response.data.message)
+      setTriggerError(true)
     }
-  };
-
-  const handleOnDragEnd = (result) =>{
-    if(!result.destination) return
-    const items = Array.from(state)
-    const [reorderitems] = items.splice(result.source.index, 1)
-    items.splice(result.destination.index, 0, reorderitems)
-    setTodos(items)
   }
 
+  const handleOnDragEnd = async (result) => {
+    try {
+      if (!result.destination) return
+      const items = Array.from(showTasks)
+      const [reorderitems] = items.splice(result.source.index, 1)
+      items.splice(result.destination.index, 0, reorderitems)
+      setShowTasks(items)
+      const indexArray = items.map((task, index) => {
+        return { index: task.index, uuid: showTasks[index].uuid }
+      })
+      await axios.patch(`http://localhost:3002/dnd`, {indexArray}, {
+        headers: {
+          authorization: `${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      })
+      getTasks()
+    } catch (err) {
+      console.log(err.response)
+      setAlert(err.response.data)
+      setTriggerError(true)
+    }
+  }
 
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -144,7 +156,7 @@ let Items = ({
                       type="checkbox"
                       checked={t.done}
                       onChange={() => {
-                        switchCheck(t);
+                        switchCheck(t)
                       }}
                     />
 
@@ -163,7 +175,7 @@ let Items = ({
 
                     <span
                       onClick={() => {
-                        delItem(t.uuid);
+                        delItem(t.uuid)
                       }}
                       className={style.delete}
                     >
@@ -178,7 +190,7 @@ let Items = ({
         )}
       </Droppable>
     </DragDropContext>
-  );
-};
+  )
+}
 
-export default Items;
+export default Items
