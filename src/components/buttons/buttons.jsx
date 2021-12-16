@@ -24,14 +24,14 @@ let Buttons = ({ setFiltredType, filtredType, orderType, setOrderType }) => {
       </button>
       <p>Sort by Date:</p>
       <button
-        onClick={() => setOrderType("asc")}
-        className={orderType === "asc" ? style.active : style.button}
+        onClick={() => setOrderType("desc")}
+        className={orderType === "desc" ? style.active : style.button}
       >
         Old
       </button>
       <button
-        onClick={() => setOrderType("desc")}
-        className={orderType === "desc" ? style.active : style.button}
+        onClick={() => setOrderType("asc")}
+        className={orderType === "asc" ? style.active : style.button}
       >
         New
       </button>
