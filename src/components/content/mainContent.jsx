@@ -19,7 +19,7 @@ function MainContent() {
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
   let allPages = [] // Array with count number page
-  let showTasks = [] // Array for render 5 task in page
+  let showTasks =[]
   const token = localStorage.getItem("accessToken")
   
   useEffect(() => { 
@@ -52,6 +52,7 @@ function MainContent() {
   for (let i = 0; i < countPages; i++) {
     allPages.push(i)
   }
+   
   showTasks = todos.slice(currentPage * 5, (currentPage + 1) * 5)
 
   // onChange event for change value tag 'Input'

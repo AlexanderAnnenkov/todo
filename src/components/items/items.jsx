@@ -1,7 +1,8 @@
 import axios from "axios";
-import React , {useState} from "react";
+import React  from "react";
 import style from "./items.module.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 
 
 let Items = ({
@@ -11,8 +12,8 @@ let Items = ({
   getTasks,
   setTriggerError,
   setAlert,
+  setShowTasks
 }) => {
-  const [updatePos, setUpdatePos] = useState()
 
   const token = localStorage.getItem("accessToken");
 
@@ -110,8 +111,17 @@ let Items = ({
     }
   };
 
+  const handleOnDragEnd = (result) =>{
+    if(!result.destination) return
+    const items = Array.from(state)
+    const [reorderitems] = items.splice(result.source.index, 1)
+    items.splice(result.destination.index, 0, reorderitems)
+    setTodos(items)
+  }
+
+
   return (
-    <DragDropContext>
+    <DragDropContext onDragEnd={handleOnDragEnd}>
       <Droppable droppableId={style.items}>
         {(provided) => (
           <ul
