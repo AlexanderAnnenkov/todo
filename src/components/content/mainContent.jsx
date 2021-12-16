@@ -7,7 +7,7 @@ import axios from "axios"
 import Input from "../input/input"
 import Alert from "@mui/material/Alert"
 import Button from "@mui/material/Button"
-import { useNavigate} from "react-router"
+import { useNavigate } from "react-router"
 
 function MainContent() {
   const [text, setText] = useState("")
@@ -16,20 +16,19 @@ function MainContent() {
   const [currentPage, setCurrentPage] = useState("0")
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
+  const [showTasks, setShowTasks] = useState([])
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
   let allPages = [] // Array with count number page
-  let showTasks = [] // Array for render 5 task in page
   const token = localStorage.getItem("accessToken")
-  
-  useEffect(() => { 
+
+  useEffect(() => {
     getTasks()
-  }, [text, filtredType, orderType])
-  
-  
+  }, [filtredType, orderType, currentPage])
+
   const getTasks = async () => {
     try {
-      if(!localStorage.getItem("accessToken")) return navigate('/login')
+      if (!localStorage.getItem("accessToken")) return navigate("/login")
       const result = await axios.get(
         `http://localhost:3002/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
         {
@@ -39,8 +38,9 @@ function MainContent() {
           },
         }
       )
-      
+
       setTodos(result.data)
+      setShowTasks(result.data.slice(currentPage * 5, (currentPage + 1) * 5))
     } catch (err) {
       setAlert(err.response.data)
       setTriggerError(true)
@@ -52,7 +52,8 @@ function MainContent() {
   for (let i = 0; i < countPages; i++) {
     allPages.push(i)
   }
-  showTasks = todos.slice(currentPage * 5, (currentPage + 1) * 5)
+
+  
 
   // onChange event for change value tag 'Input'
   const onNewTextTask = (e) => {
@@ -81,15 +82,22 @@ function MainContent() {
       setTriggerError(true)
     }
   }
-  const exitAccount =() =>{
-    localStorage.removeItem('accessToken')
-    navigate('/login')
+  const exitAccount = () => {
+    localStorage.removeItem("accessToken")
+    navigate("/login")
   }
   // Render components
   return (
     <div>
       <div className={style.btnExt}>
-        <Button variant="text" onClick={()=>{exitAccount()}}>Exit</Button>
+        <Button
+          variant="text"
+          onClick={() => {
+            exitAccount()
+          }}
+        >
+          Exit
+        </Button>
       </div>
       <div className={style.app}>
         {triggerError && (
@@ -114,6 +122,7 @@ function MainContent() {
           state={todos}
           setTodos={setTodos}
           showTasks={showTasks}
+          setShowTasks={setShowTasks}
           setTriggerError={setTriggerError}
           setAlert={setAlert}
         />

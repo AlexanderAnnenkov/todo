@@ -1,6 +1,7 @@
 import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 let Items = ({
   state,
@@ -9,23 +10,21 @@ let Items = ({
   getTasks,
   setTriggerError,
   setAlert,
+  setShowTasks,
 }) => {
-
   const token = localStorage.getItem("accessToken")
 
   // Function 'Delete task'
-  const delItem = (id) => {
+  const delItem = async(id) => {
     try {
-      axios.delete(`http://localhost:3002/task/${id}`, {
+      await axios.delete(`http://localhost:3002/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json;charset=utf-8",
         },
       })
-      let newTodos = state.filter((e) => e.uuid !== id)
-      setTodos(newTodos)
-
+      getTasks()
     } catch (err) {
       setAlert(err.response.data.message)
       setTriggerError(true)
@@ -48,7 +47,7 @@ let Items = ({
             "Content-Type": "application/json;charset=utf-8",
           },
         }
-      )     
+      )
       getTasks()
     } catch (err) {
       setAlert(err.response.data.message)
@@ -108,42 +107,89 @@ let Items = ({
     }
   }
 
+  const handleOnDragEnd = async (result) => {
+    try {
+      if (!result.destination) return
+      const items = Array.from(showTasks)
+      const [reorderitems] = items.splice(result.source.index, 1)
+      items.splice(result.destination.index, 0, reorderitems)
+      setShowTasks(items)
+      const indexArray = items.map((task, index) => {
+        return { index: task.index, uuid: showTasks[index].uuid }
+      })
+      await axios.patch(`http://localhost:3002/dnd`, {indexArray}, {
+        headers: {
+          authorization: `${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      })
+      getTasks()
+    } catch (err) {
+      console.log(err.response)
+      setAlert(err.response.data)
+      setTriggerError(true)
+    }
+  }
+
   return (
-    <ul className={style.items}>
-      {showTasks.map((t) => (
-        <li key={t.uuid} id={t.uuid} className={style.item}>
-          <input
-            type="checkbox"
-            checked={t.done}
-            onChange={() => {
-              switchCheck(t)
-            }}
-          />
-
-          <span
-            onDoubleClick={enableContentEditable}
-            onKeyDown={(e) => editTask(e, t)}
-            onBlur={(e) => disableBlur(e, t)}
-            className={style.text}
+    <DragDropContext onDragEnd={handleOnDragEnd}>
+      <Droppable droppableId={style.items}>
+        {(provided) => (
+          <ul
+            className={style.items}
+            {...provided.droppableProps}
+            ref={provided.innerRef}
           >
-            {t.name}
-          </span>
+            {showTasks.map((t, index) => (
+              <Draggable key={t.uuid} draggableId={t.uuid} index={index}>
+                {(provided) => (
+                  <li
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    key={t.uuid}
+                    id={t.uuid}
+                    className={style.item}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={t.done}
+                      onChange={() => {
+                        switchCheck(t)
+                      }}
+                    />
 
-          <span className={style.date}>
-            {new Date(Date.parse(t.createdAt)).toLocaleString()}
-          </span>
+                    <span
+                      onDoubleClick={enableContentEditable}
+                      onKeyDown={(e) => editTask(e, t)}
+                      onBlur={(e) => disableBlur(e, t)}
+                      className={style.text}
+                    >
+                      {t.name}
+                    </span>
 
-          <span
-            onClick={() => {
-              delItem(t.uuid)
-            }}
-            className={style.delete}
-          >
-            <img src="https://cdn-icons-png.flaticon.com/512/2602/2602735.png" />
-          </span>
-        </li>
-      ))}
-    </ul>
+                    <span className={style.date}>
+                      {new Date(Date.parse(t.createdAt)).toLocaleString()}
+                    </span>
+
+                    <span
+                      onClick={() => {
+                        delItem(t.uuid)
+                      }}
+                      className={style.delete}
+                    >
+                      <img src="https://cdn-icons-png.flaticon.com/512/2602/2602735.png" />
+                    </span>
+                  </li>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </ul>
+        )}
+      </Droppable>
+    </DragDropContext>
   )
 }
 

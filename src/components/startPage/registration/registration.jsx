@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField"
 import style from "../startPage.module.css"
 import axios from "axios"
 import Alert from "@mui/material/Alert"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 
 const Registration = () => {
   const [login, setLogin] = useState("")
@@ -12,7 +12,7 @@ const Registration = () => {
   const [repeatPass, setRepeatPassword] = useState("")
   const [alert, setAlert] = useState("")
   const [triggerError, setTriggerError] = useState(false)
-
+  const navigate = useNavigate()
   const sendUser = async (e) => {
     try {
       e.preventDefault()
@@ -28,7 +28,7 @@ const Registration = () => {
       setLogin("")
       setPassword("")
       setRepeatPassword("")
-      // navigate("/main")
+      navigate("/main")
     } catch (err) {
       setAlert(err.response.data)
       setTriggerError(true)
