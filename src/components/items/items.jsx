@@ -1,4 +1,3 @@
-import axios from "axios"
 import React from "react"
 import style from "./items.module.css"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
