@@ -5,6 +5,8 @@ import style from "../startPage.module.css"
 import axios from "axios"
 import Alert from "@mui/material/Alert"
 import { NavLink, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import "../../../translation/i18n"
 
 const Registration = () => {
   const [login, setLogin] = useState("")
@@ -13,12 +15,14 @@ const Registration = () => {
   const [alert, setAlert] = useState("")
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
   const sendUser = async (e) => {
     try {
       e.preventDefault()
       if (password !== repeatPass) {
         setTriggerError(true)
-        return setAlert("Password no identify")
+        return setAlert(t('alertReg'))
       }
       const user = await axios.post("http://localhost:3002/registration", {
         login: login,
@@ -54,8 +58,8 @@ const Registration = () => {
           {alert}
         </Alert>
       )}
-      <h1 className={style.text}>Todo List</h1>
-      <h2 className={style.text}>Registration</h2>
+      <h1 className={style.text}>{t("title")}</h1>
+      <h2 className={style.text}>{t("registration")}</h2>
       <form action="post" onSubmit={sendUser}>
         <div className={style.login}>
           <TextField
@@ -88,13 +92,13 @@ const Registration = () => {
           />
         </div>
         <div className={style.btn}>
-          <Button type="submit">Sign up</Button>
+          <Button type="submit">{t("signUp")}</Button>
         </div>
       </form>
-      <p className={style.textDescript}>If you have account, sign in!</p>
+      <p className={style.textDescript}>{t("regDescription")}</p>
       <span className={style.btn1}>
         <NavLink to="/login">
-          <Button>Sign in</Button>
+          <Button>{t("signIn")}</Button>
         </NavLink>
       </span>
     </div>
