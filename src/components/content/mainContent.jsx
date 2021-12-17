@@ -214,6 +214,7 @@ function MainContent() {
           >
             <MenuItem value={'en'}>English</MenuItem>
             <MenuItem value={'ru'}>Russian</MenuItem>
+            <MenuItem value={'ua'}>Ukranian</MenuItem>
           </Select>
         </FormControl>
         <span className={style.btn1}>
