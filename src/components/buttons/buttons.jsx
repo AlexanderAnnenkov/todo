@@ -1,39 +1,42 @@
 import React from "react"
 import style from "./buttons.module.css"
+import { useTranslation } from "react-i18next";
+import "../../translation/i18n";
 
 let Buttons = ({ setFiltredType, filtredType, orderType, setOrderType }) => {
+  const {t} = useTranslation()
   return (
     <div className={style.btn}>
       <button
         onClick={() => setFiltredType("")}
         className={filtredType === "All" ? style.active : style.button}
       >
-        All
+        {t ("all")}
       </button>
       <button
         onClick={() => setFiltredType("undone")}
         className={filtredType === "undone" ? style.active : style.button}
       >
-        Undone
+        {t ("undone")}
       </button>
       <button
         onClick={() => setFiltredType("done")}
         className={filtredType === "done" ? style.active : style.button}
       >
-        Done
+        {t ("done")}
       </button>
-      <p>Sort by Date:</p>
+      <p>{t ("sortByDate")}</p>
       <button
         onClick={() => setOrderType("desc")}
         className={orderType === "desc" ? style.active : style.button}
       >
-        Old
+        {t ("old")}
       </button>
       <button
         onClick={() => setOrderType("asc")}
         className={orderType === "asc" ? style.active : style.button}
       >
-        New
+        {t ("new")}
       </button>
     </div>
   )

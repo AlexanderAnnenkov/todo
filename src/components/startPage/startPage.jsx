@@ -5,6 +5,8 @@ import style from "./startPage.module.css"
 import { NavLink, useNavigate, Navigate } from "react-router-dom"
 import Alert from "@mui/material/Alert"
 import axios from "axios"
+import { useTranslation } from "react-i18next";
+import "../../translation/i18n";
 
 const StartPage = () => {
   const [login, setLogin] = useState("")
@@ -12,6 +14,7 @@ const StartPage = () => {
   const [alert, setAlert] = useState("")
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   if (localStorage.getItem("accessToken"))
     return <Navigate replace to="/main" />
@@ -49,7 +52,7 @@ const StartPage = () => {
           {alert}
         </Alert>
       )}
-      <h1 className={style.text}>Todo List</h1>
+      <h1 className={style.text}>{t("title")}</h1>
       <form action="post" onSubmit={sendUser}>
         <div className={style.login}>
           <TextField
@@ -73,13 +76,13 @@ const StartPage = () => {
           />
         </div>
         <div className={style.btn}>
-          <Button type="submit">Sign in</Button>
+          <Button type="submit">{t("signIn")}</Button>
         </div>
       </form>
-      <p className={style.textDescript}>If you don`t have account, sign up!</p>
+      <p className={style.textDescript}>{t("logDescription")}</p>
       <span className={style.btn1}>
         <NavLink to="/registration">
-          <Button>Sign up</Button>
+          <Button>{t("signUp")}</Button>
         </NavLink>
       </span>
     </div>

@@ -7,7 +7,14 @@ import axios from "axios"
 import Input from "../input/input"
 import Alert from "@mui/material/Alert"
 import Button from "@mui/material/Button"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import FormControl from "@mui/material/FormControl"
+import Select from "@mui/material/Select"
 import { useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
+import "../../translation/i18n"
+import i18next from "i18next"
 
 function MainContent() {
   const [text, setText] = useState("")
@@ -17,8 +24,10 @@ function MainContent() {
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
   const [showTasks, setShowTasks] = useState([])
+  const [language, setLanguage] = useState('')
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
+  const { t } = useTranslation()
   let allPages = [] // Array with count number page
   const token = localStorage.getItem("accessToken")
 
@@ -53,7 +62,10 @@ function MainContent() {
     allPages.push(i)
   }
 
-  
+  const handleChange = (event) => {
+    i18next.changeLanguage(event.target.value)
+    setLanguage(i18next.language)
+  }
 
   // onChange event for change value tag 'Input'
   const onNewTextTask = (e) => {
@@ -86,18 +98,135 @@ function MainContent() {
     localStorage.removeItem("accessToken")
     navigate("/login")
   }
+  const delItem = async(id) => {
+    try {
+      await axios.delete(`http://localhost:3002/task/${id}`, {
+        headers: {
+          authorization: `${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      })
+      getTasks()
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
+    }
+  }
+  const switchCheck = async (e) => {
+    try {
+      await axios.patch(
+        `http://localhost:3002/task/${e.uuid}`,
+        {
+          name: e.name,
+          done: !e.done,
+        },
+        {
+          headers: {
+            authorization: `${token}`,
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
+      )
+      getTasks()
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
+    }
+  }
+  const editTask = async (e, content) => {
+    try {
+      if (e.key === "Enter") {
+        if (e.target.textContent !== "") {
+          const editTask = e.target.textContent
+          content.name = e.target.textContent
+          await axios
+            .patch(
+              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
+              {
+                name: editTask,
+                done: false,
+              },
+              {
+                headers: {
+                  authorization: `${token}`,
+                  "Access-Control-Allow-Origin": "*",
+                  "Content-Type": "application/json;charset=utf-8",
+                },
+              }
+            )
+            .then((res) => {
+              e.target.contentEditable = false
+              getTasks()
+            })
+        } else {
+          e.target.textContent = content.name
+          e.target.contentEditable = false
+        }
+      }
+      if (e.key === "Escape") {
+        e.target.textContent = content.name
+        e.target.contentEditable = false
+      }
+    } catch (err) {
+      setAlert(err.response.data.message)
+      setTriggerError(true)
+    }
+  }
+  const handleOnDragEnd = async (result) => {
+    try {
+      if (!result.destination) return
+      const items = Array.from(showTasks)
+      const [reorderitems] = items.splice(result.source.index, 1)
+      items.splice(result.destination.index, 0, reorderitems)
+      setShowTasks(items)
+      const indexArray = items.map((task, index) => {
+        return { index: task.index, uuid: showTasks[index].uuid }
+      })
+      await axios.patch(`http://localhost:3002/dnd`, {indexArray}, {
+        headers: {
+          authorization: `${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      })
+      getTasks()
+    } catch (err) {
+      console.log(err.response)
+      setAlert(err.response.data)
+      setTriggerError(true)
+    }
+  }
+
   // Render components
   return (
     <div>
       <div className={style.btnExt}>
-        <Button
+        <FormControl variant="standard" size="small" sx={{width:100}}>
+          <InputLabel id="demo-simple-select-label">Language</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={language}
+            label="Age"
+            onChange={handleChange}
+          >
+            <MenuItem value={'en'}>English</MenuItem>
+            <MenuItem value={'ru'}>Russian</MenuItem>
+          </Select>
+        </FormControl>
+        <span className={style.btn1}>
+          <Button
           variant="text"
+          size="large"
           onClick={() => {
             exitAccount()
           }}
         >
-          Exit
+          {t("exit")}
         </Button>
+        </span>
       </div>
       <div className={style.app}>
         {triggerError && (
@@ -106,7 +235,7 @@ function MainContent() {
           </Alert>
         )}
 
-        <h1 className={style.title}>ToDo List</h1>
+        <h1 className={style.title}>{t("title")}</h1>
 
         <Input sendTask={sendTask} onNewTextTask={onNewTextTask} text={text} />
 
@@ -118,13 +247,11 @@ function MainContent() {
         />
 
         <Items
-          getTasks={getTasks}
-          state={todos}
-          setTodos={setTodos}
           showTasks={showTasks}
-          setShowTasks={setShowTasks}
-          setTriggerError={setTriggerError}
-          setAlert={setAlert}
+          delItem={delItem}
+          switchCheck={switchCheck}
+          editTask={editTask}
+          handleOnDragEnd={handleOnDragEnd}       
         />
 
         <Pagination

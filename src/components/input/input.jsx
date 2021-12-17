@@ -1,7 +1,10 @@
 import React from "react"
 import style from "./input.module.css"
+import { useTranslation } from "react-i18next";
+import "../../translation/i18n";
 
 const Input = ({ sendTask, onNewTextTask, text }) => {
+  const {t} = useTranslation()
   return (
     <input
       onKeyDown={sendTask}
@@ -9,7 +12,7 @@ const Input = ({ sendTask, onNewTextTask, text }) => {
       value={text}
       className={style.fieldWrite}
       type="text"
-      placeholder="I want to..."
+      placeholder={t("placeholderInput")}
     ></input>
   )
 }
