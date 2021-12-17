@@ -12,5 +12,6 @@ export const TRANSLATIONS_RU = {
     signUp:'Зарегистрироваться',
     regDescription:'Если вы имеете аккаунт, войдите в него!',
     placeholderInput:'Я хочу сделать ...',
-    registration:"Регистрация"
+    registration:"Регистрация",
+    alertReg: "Пароли неодинаковые",
    };
