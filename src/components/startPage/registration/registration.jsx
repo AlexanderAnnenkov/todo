@@ -22,12 +22,15 @@ const Registration = () => {
       e.preventDefault()
       if (password !== repeatPass) {
         setTriggerError(true)
-        return setAlert(t('alertReg'))
+        return setAlert(t("alertReg"))
       }
-      const user = await axios.post("http://localhost:3002/registration", {
-        login: login,
-        password: password,
-      })
+      const user = await axios.post(
+        "https://heroku-backend-app-for-todo.herokuapp.com/registration",
+        {
+          login: login,
+          password: password,
+        }
+      )
       localStorage.setItem("accessToken", user.data.jwtToken)
       setLogin("")
       setPassword("")

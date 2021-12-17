@@ -39,7 +39,7 @@ function MainContent() {
     try {
       if (!localStorage.getItem("accessToken")) return navigate("/login")
       const result = await axios.get(
-        `http://localhost:3002/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
+        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
         {
           headers: {
             authorization: localStorage.getItem("accessToken"),
@@ -76,7 +76,7 @@ function MainContent() {
     try {
       if (event.key === "Enter" && event.target.value !== "") {
         await axios.post(
-          "http://localhost:3002/task",
+          "https://heroku-backend-app-for-todo.herokuapp.com/task",
           { name: text },
           {
             headers: {
@@ -100,7 +100,7 @@ function MainContent() {
   }
   const delItem = async(id) => {
     try {
-      await axios.delete(`http://localhost:3002/task/${id}`, {
+      await axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
@@ -116,7 +116,7 @@ function MainContent() {
   const switchCheck = async (e) => {
     try {
       await axios.patch(
-        `http://localhost:3002/task/${e.uuid}`,
+        `https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`,
         {
           name: e.name,
           done: !e.done,
@@ -184,7 +184,7 @@ function MainContent() {
       const indexArray = items.map((task, index) => {
         return { index: task.index, uuid: showTasks[index].uuid }
       })
-      await axios.patch(`http://localhost:3002/dnd`, {indexArray}, {
+      await axios.patch(`https://heroku-backend-app-for-todo.herokuapp.com/dnd`, {indexArray}, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",

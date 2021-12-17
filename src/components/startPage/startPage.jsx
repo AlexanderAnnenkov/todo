@@ -37,10 +37,13 @@ const StartPage = () => {
     try {
       e.preventDefault()
 
-      const user = await axios.post("http://localhost:3002/login", {
-        login,
-        password,
-      })
+      const user = await axios.post(
+        "https://heroku-backend-app-for-todo.herokuapp.com/login",
+        {
+          login,
+          password,
+        }
+      )
       localStorage.setItem("accessToken", user.data.jwtToken)
       setLogin("")
       setPassword("")
