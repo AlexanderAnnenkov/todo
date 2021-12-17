@@ -22,7 +22,7 @@ const Registration = () => {
       e.preventDefault()
       if (password !== repeatPass) {
         setTriggerError(true)
-        return setAlert("Password no identify")
+        return setAlert(t('alertReg'))
       }
       const user = await axios.post("http://localhost:3002/registration", {
         login: login,
