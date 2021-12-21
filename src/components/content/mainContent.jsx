@@ -24,10 +24,13 @@ function MainContent() {
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
   const [showTasks, setShowTasks] = useState([])
-  const [language, setLanguage] = useState('')
+  const [language, setLanguage] = useState("")
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
+
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
+
   let allPages = [] // Array with count number page
   const token = localStorage.getItem("accessToken")
 
@@ -39,7 +42,7 @@ function MainContent() {
     try {
       if (!localStorage.getItem("accessToken")) return navigate("/login")
       const result = await axios.get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
+        `${API_ENDPOINT}/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
         {
           headers: {
             authorization: localStorage.getItem("accessToken"),
@@ -74,12 +77,14 @@ function MainContent() {
   //onKeyDown event for send object task in array on localstorage
   const sendTask = async (event) => {
     try {
+      console.log(language)
       if (event.key === "Enter" && event.target.value !== "") {
         await axios.post(
-          "https://heroku-backend-app-for-todo.herokuapp.com/task",
+          `${API_ENDPOINT}/task`,
           { name: text },
           {
             headers: {
+              "accept-language": `${language}`,
               authorization: `${token}`,
               "Access-Control-Allow-Origin": "*",
               "Content-Type": "application/json;charset=utf-8",
@@ -98,9 +103,9 @@ function MainContent() {
     localStorage.removeItem("accessToken")
     navigate("/login")
   }
-  const delItem = async(id) => {
+  const delItem = async (id) => {
     try {
-      await axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`, {
+      await axios.delete(`${API_ENDPOINT}/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
@@ -116,7 +121,7 @@ function MainContent() {
   const switchCheck = async (e) => {
     try {
       await axios.patch(
-        `https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`,
+        `${API_ENDPOINT}/task/${e.uuid}`,
         {
           name: e.name,
           done: !e.done,
@@ -143,7 +148,7 @@ function MainContent() {
           content.name = e.target.textContent
           await axios
             .patch(
-              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
+              `${API_ENDPOINT}/task/${content.uuid}`,
               {
                 name: editTask,
                 done: false,
@@ -184,13 +189,17 @@ function MainContent() {
       const indexArray = items.map((task, index) => {
         return { index: task.index, uuid: showTasks[index].uuid }
       })
-      await axios.patch(`https://heroku-backend-app-for-todo.herokuapp.com/dnd`, {indexArray}, {
-        headers: {
-          authorization: `${token}`,
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json;charset=utf-8",
-        },
-      })
+      await axios.patch(
+        `${API_ENDPOINT}/dnd`,
+        { indexArray },
+        {
+          headers: {
+            authorization: `${token}`,
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
+      )
       getTasks()
     } catch (err) {
       console.log(err.response)
@@ -203,7 +212,7 @@ function MainContent() {
   return (
     <div>
       <div className={style.btnExt}>
-        <FormControl variant="standard" size="small" sx={{width:100}}>
+        <FormControl variant="standard" size="small" sx={{ width: 100 }}>
           <InputLabel id="demo-simple-select-label">Language</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -212,21 +221,21 @@ function MainContent() {
             label="Age"
             onChange={handleChange}
           >
-            <MenuItem value={'en'}>English</MenuItem>
-            <MenuItem value={'ru'}>Russian</MenuItem>
-            <MenuItem value={'ua'}>Ukranian</MenuItem>
+            <MenuItem value={"en"}>English</MenuItem>
+            <MenuItem value={"ru"}>Russian</MenuItem>
+            <MenuItem value={"ua"}>Ukranian</MenuItem>
           </Select>
         </FormControl>
         <span className={style.btn1}>
           <Button
-          variant="text"
-          size="large"
-          onClick={() => {
-            exitAccount()
-          }}
-        >
-          {t("exit")}
-        </Button>
+            variant="text"
+            size="large"
+            onClick={() => {
+              exitAccount()
+            }}
+          >
+            {t("exit")}
+          </Button>
         </span>
       </div>
       <div className={style.app}>
@@ -252,7 +261,7 @@ function MainContent() {
           delItem={delItem}
           switchCheck={switchCheck}
           editTask={editTask}
-          handleOnDragEnd={handleOnDragEnd}       
+          handleOnDragEnd={handleOnDragEnd}
         />
 
         <Pagination

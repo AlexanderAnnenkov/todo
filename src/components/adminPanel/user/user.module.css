@@ -1,0 +1,24 @@
+.item{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 400px;
+    height: 50px;
+    margin-top: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+/* Span(text) */
+.text{
+    text-align: center;
+    width: 150px;
+}
+
+
+.item:hover{
+    background-color: rgba(205,205,205,0.5);
+    transition: 0.4s;
+}
+

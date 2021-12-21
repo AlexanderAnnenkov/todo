@@ -22,6 +22,7 @@ const StartPage = () => {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
   if (localStorage.getItem("accessToken"))
     return <Navigate replace to="/main" />
 
@@ -38,7 +39,7 @@ const StartPage = () => {
       e.preventDefault()
 
       const user = await axios.post(
-        "https://heroku-backend-app-for-todo.herokuapp.com/login",
+        `${API_ENDPOINT}/login`,
         {
           login,
           password,
