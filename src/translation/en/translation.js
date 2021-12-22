@@ -14,4 +14,7 @@ export const TRANSLATIONS_EN = {
   placeholderInput: "I want to ...",
   registration: "Registration",
   alertReg: "Password no identify",
+  login:"Login",
+  password:"Password",
+  repeatPass:"Repeat Password"
 }

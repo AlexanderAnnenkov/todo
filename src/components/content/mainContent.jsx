@@ -7,6 +7,7 @@ import axios from "axios"
 import Input from "../input/input"
 import Alert from "@mui/material/Alert"
 import Button from "@mui/material/Button"
+import Snackbar from '@mui/material/Snackbar';
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
 import FormControl from "@mui/material/FormControl"
@@ -24,12 +25,13 @@ function MainContent() {
   const [todos, setTodos] = useState([])
   const [alert, setAlert] = useState("")
   const [showTasks, setShowTasks] = useState([])
-  const [language, setLanguage] = useState('')
+  const [language, setLanguage] = useState('en')
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
   let allPages = [] // Array with count number page
   const token = localStorage.getItem("accessToken")
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
 
   useEffect(() => {
     getTasks()
@@ -39,7 +41,7 @@ function MainContent() {
     try {
       if (!localStorage.getItem("accessToken")) return navigate("/login")
       const result = await axios.get(
-        `https://heroku-backend-app-for-todo.herokuapp.com/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
+        `${API_ENDPOINT}/tasks?filterBy=${filtredType}&sortBy=${orderType}`,
         {
           headers: {
             authorization: localStorage.getItem("accessToken"),
@@ -62,6 +64,8 @@ function MainContent() {
     allPages.push(i)
   }
 
+
+
   const handleChange = (event) => {
     i18next.changeLanguage(event.target.value)
     setLanguage(i18next.language)
@@ -76,13 +80,14 @@ function MainContent() {
     try {
       if (event.key === "Enter" && event.target.value !== "") {
         await axios.post(
-          "https://heroku-backend-app-for-todo.herokuapp.com/task",
+          `${API_ENDPOINT}/task`,
           { name: text },
           {
             headers: {
               authorization: `${token}`,
               "Access-Control-Allow-Origin": "*",
               "Content-Type": "application/json;charset=utf-8",
+              "accept-language": `${language}`
             },
           }
         )
@@ -100,11 +105,12 @@ function MainContent() {
   }
   const delItem = async(id) => {
     try {
-      await axios.delete(`https://heroku-backend-app-for-todo.herokuapp.com/task/${id}`, {
+      await axios.delete(`${API_ENDPOINT}/task/${id}`, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json;charset=utf-8",
+          "accept-language": `${language}`
         },
       })
       getTasks()
@@ -116,7 +122,7 @@ function MainContent() {
   const switchCheck = async (e) => {
     try {
       await axios.patch(
-        `https://heroku-backend-app-for-todo.herokuapp.com/task/${e.uuid}`,
+        `${API_ENDPOINT}/task/${e.uuid}`,
         {
           name: e.name,
           done: !e.done,
@@ -126,6 +132,7 @@ function MainContent() {
             authorization: `${token}`,
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json;charset=utf-8",
+            "accept-language": `${language}`
           },
         }
       )
@@ -143,7 +150,7 @@ function MainContent() {
           content.name = e.target.textContent
           await axios
             .patch(
-              `https://heroku-backend-app-for-todo.herokuapp.com/task/${content.uuid}`,
+              `${API_ENDPOINT}/task/${content.uuid}`,
               {
                 name: editTask,
                 done: false,
@@ -153,6 +160,7 @@ function MainContent() {
                   authorization: `${token}`,
                   "Access-Control-Allow-Origin": "*",
                   "Content-Type": "application/json;charset=utf-8",
+                  "accept-language": `${language}`
                 },
               }
             )
@@ -184,11 +192,12 @@ function MainContent() {
       const indexArray = items.map((task, index) => {
         return { index: task.index, uuid: showTasks[index].uuid }
       })
-      await axios.patch(`https://heroku-backend-app-for-todo.herokuapp.com/dnd`, {indexArray}, {
+      await axios.patch(`${API_ENDPOINT}/dnd`, {indexArray}, {
         headers: {
           authorization: `${token}`,
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json;charset=utf-8",
+          "accept-language": `${language}`
         },
       })
       getTasks()
@@ -230,12 +239,12 @@ function MainContent() {
         </span>
       </div>
       <div className={style.app}>
-        {triggerError && (
+         <Snackbar open={triggerError} autoHideDuration={3000} onClose={() => setTriggerError(false)}>
           <Alert severity="error" onClose={() => setTriggerError(false)}>
             {alert}
           </Alert>
-        )}
-
+        </Snackbar>
+        
         <h1 className={style.title}>{t("title")}</h1>
 
         <Input sendTask={sendTask} onNewTextTask={onNewTextTask} text={text} />

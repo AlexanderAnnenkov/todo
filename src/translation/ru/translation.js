@@ -14,4 +14,7 @@ export const TRANSLATIONS_RU = {
     placeholderInput:'Я хочу сделать ...',
     registration:"Регистрация",
     alertReg: "Пароли неодинаковые",
+    login:"Логин",
+    password:"Пароль",
+    repeatPass:"Повторить пароль"
    };

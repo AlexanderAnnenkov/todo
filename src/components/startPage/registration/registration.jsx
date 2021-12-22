@@ -3,6 +3,7 @@ import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import style from "../startPage.module.css"
 import axios from "axios"
+import Snackbar from '@mui/material/Snackbar';
 import Alert from "@mui/material/Alert"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -16,6 +17,8 @@ const Registration = () => {
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
+
 
   const sendUser = async (e) => {
     try {
@@ -25,7 +28,7 @@ const Registration = () => {
         return setAlert(t("alertReg"))
       }
       const user = await axios.post(
-        "https://heroku-backend-app-for-todo.herokuapp.com/registration",
+        `${API_ENDPOINT}/registration`,
         {
           login: login,
           password: password,
@@ -56,11 +59,11 @@ const Registration = () => {
 
   return (
     <div className={style.container}>
-      {triggerError && (
-        <Alert severity="error" onClose={() => setTriggerError(false)}>
-          {alert}
-        </Alert>
-      )}
+     <Snackbar open={triggerError} autoHideDuration={3000} onClose={() => setTriggerError(false)}>
+          <Alert severity="error" onClose={() => setTriggerError(false)}>
+            {alert}
+          </Alert>
+        </Snackbar>
       <h1 className={style.text}>{t("title")}</h1>
       <h2 className={style.text}>{t("registration")}</h2>
       <form action="post" onSubmit={sendUser}>
@@ -68,7 +71,7 @@ const Registration = () => {
           <TextField
             required
             id="outlined-required"
-            label="Login"
+            label={t('login')}
             onChange={onNewLogin}
             value={login}
             autoComplete="off"
@@ -77,7 +80,7 @@ const Registration = () => {
         <div className={style.pwrd}>
           <TextField
             required
-            label="Password"
+            label={t("password")}
             type="password"
             autoComplete="off"
             onChange={onNewPassword}
@@ -87,7 +90,7 @@ const Registration = () => {
         <div className={style.pwrd1}>
           <TextField
             required
-            label="Repeat Password"
+            label={t("repeatPass")}
             type="password"
             autoComplete="off"
             onChange={onRepeatPass}

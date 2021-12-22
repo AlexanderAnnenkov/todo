@@ -6,6 +6,7 @@ import { NavLink, useNavigate, Navigate } from "react-router-dom"
 import Alert from "@mui/material/Alert"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
+import Snackbar from '@mui/material/Snackbar';
 import FormControl from "@mui/material/FormControl"
 import Select from "@mui/material/Select"
 import axios from "axios"
@@ -17,10 +18,11 @@ const StartPage = () => {
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const [alert, setAlert] = useState("")
-  const [language, setLanguage] = useState("")
+  const [language, setLanguage] = useState("en")
   const [triggerError, setTriggerError] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
 
   if (localStorage.getItem("accessToken"))
     return <Navigate replace to="/main" />
@@ -38,10 +40,17 @@ const StartPage = () => {
       e.preventDefault()
 
       const user = await axios.post(
-        "https://heroku-backend-app-for-todo.herokuapp.com/login",
+        `${API_ENDPOINT}/login`,
         {
           login,
           password,
+        }, 
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json;charset=utf-8",
+            "accept-language": `${language}`
+          },
         }
       )
       localStorage.setItem("accessToken", user.data.jwtToken)
@@ -76,18 +85,18 @@ const StartPage = () => {
         </FormControl>
       </div>
       <div className={style.container}>
-        {triggerError && (
+      <Snackbar open={triggerError} autoHideDuration={3000} onClose={() => setTriggerError(false)}>
           <Alert severity="error" onClose={() => setTriggerError(false)}>
             {alert}
           </Alert>
-        )}
+        </Snackbar>
         <h1 className={style.text}>{t("title")}</h1>
         <form action="post" onSubmit={sendUser}>
           <div className={style.login}>
             <TextField
               required
               id="outlined-required"
-              label="Login"
+              label={t("login")}
               onChange={onNewLogin}
               value={login}
               autoComplete="off"
@@ -97,7 +106,7 @@ const StartPage = () => {
             <TextField
               required
               id="outlined-password-input"
-              label="Password"
+              label={t("password")}
               type="password"
               onChange={onNewPassword}
               value={password}
